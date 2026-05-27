@@ -15,7 +15,7 @@ O usuário-alvo do MVP é **a turma do organizador** — não é um SaaS multi-g
 - Cadastra e convida jogadores
 - Lança gols/assistências depois do jogo
 
-> **Data/dia recorrente, horário e local da quadra são fixos e não editáveis pela UI**. Esses valores ficam em variáveis de ambiente do backend (`MATCH_WEEKDAY`, `MATCH_TIME`, `MATCH_LOCATION`) — o admin não precisa preencher nada por semana. Um job cria automaticamente o `Match` da semana corrente com base nesses valores.
+> **Data/dia recorrente, horário e local da quadra são fixos e não editáveis pela UI**. Esses valores ficam em variáveis de ambiente do backend (`RACHA_WEEKDAY`, `RACHA_TIME`, `RACHA_LOCATION`) — o admin não precisa preencher nada por semana. Um job cria automaticamente a sessão semanal do racha com base nesses valores.
 
 ### Player (jogador)
 - Confirma presença para a segunda específica
@@ -28,13 +28,13 @@ O usuário-alvo do MVP é **a turma do organizador** — não é um SaaS multi-g
 ## Escopo do MVP
 
 ### Dentro
-- Cadastro de jogadores com posição preferida e **label "mensalista" ou "avulso"** (organização apenas; sem fluxo de pagamento associado no MVP)
+- Cadastro de jogadores com marcação de goleiro (`goalkeeper: true/false`) e **label "mensalista" ou "avulso"** (organização apenas; sem fluxo de pagamento associado no MVP)
 - Avaliação interna de habilidade: todos os players avaliam os demais com nota de 0 a 100; o sistema usa apenas a média, sem expor notas individuais ou médias na UI
 - Confirmação de presença para o racha da semana corrente, com lista visível dos confirmados
 - Lista de espera quando passa do limite de vagas
 - **Sorteio de times** (snake draft por média interna de habilidade) — ferramenta **temporária na quadra**, resultado fica em memória no dispositivo do admin, **não persiste em banco**
-- **Cronômetro + placar** durante a partida — também ferramentas temporárias em memória, **não persistem em banco**
-- Registro de gols e assistências por partida (esses sim persistem, agregados ao perfil/ranking)
+- **Cronômetro + placar** durante as partidas curtas — também ferramentas temporárias em memória, **não persistem em banco**
+- Registro agregado de gols e assistências por sessão semanal do racha (esses sim persistem, agregados ao perfil/ranking)
 - Ranking de artilheiros e histórico de presença
 - Notificações push (lembrete de confirmação, lembrete de jogo)
 - **Funcionamento offline-first** em todas as operações de leitura e na maioria das de escrita
@@ -52,15 +52,16 @@ O usuário-alvo do MVP é **a turma do organizador** — não é um SaaS multi-g
 
 | Termo | Significado |
 |---|---|
-| **Racha** | A partida de segunda-feira. No código em inglês = `Match`. |
+| **Racha** | O encontro semanal da turma, normalmente na segunda-feira. No código em inglês = `WeeklySession`. |
+| **Partida curta** | Jogo de quadra dentro do racha, com duração de 8 minutos ou até 2 gols. Não tem tabela própria, não é sincronizada e não é persistida no MVP. |
 | **Mensalista** | Jogador com `player_type = monthly`. No MVP é só uma label organizacional (sem cobrança); quando pagamento voltar, será o jogador com assinatura ativa. |
 | **Avulso** | Jogador com `player_type = casual`. No MVP é só uma label; quando pagamento voltar, será quem paga por partida. |
 | **Média de habilidade** | Nota interna de 0 a 100 calculada a partir das avaliações que os players fazem dos demais. Não é exibida para usuários nem editada manualmente; apenas o sistema usa no sorteio. |
 | **Presença** | Estado do jogador para um racha: `confirmed`, `declined`, `pending`. |
 | **Lista de espera** | Confirmações além de `max_players`; primeiras na fila quando alguém cancela. |
-| **Sorteio** | Algoritmo de balanceamento que distribui os confirmados em times. Resultado é volátil: vive só no app do admin durante a partida. |
+| **Sorteio** | Algoritmo de balanceamento que distribui os confirmados em times. Resultado é volátil: vale apenas para uma rodada/partida curta e vive só no app durante a sessão. |
 | **Cronômetro** | Contador de tempo de jogo (in-app, em memória), com Iniciar/Pausar/Resetar. Não persiste. |
-| **Placar** | Contador de gols por time (in-app, em memória), com +/- por time. Não persiste; gols individuais são registrados separadamente em `match_stats` no fim do jogo. |
+| **Placar** | Contador de gols por time (in-app, em memória), com +/- por time. Não persiste; gols individuais podem ser registrados separadamente em `session_stats` no fim do racha. |
 | **Tombstone** | Marcador de deleção (`deleted_at`) propagado pela sincronização. |
 
 ## Princípios de produto

@@ -1,6 +1,6 @@
 # Inimigos da Bola
 
-App mobile (Flutter) para gerir o "futebol de segunda" da turma: confirmação de presença semanal, sorteio de times equilibrados e estatísticas de partida. Single-tenant — atende um único grupo de ~10–20 jogadores.
+App mobile (Flutter) para gerir o "futebol de segunda" da turma: confirmação de presença semanal, sorteio de times equilibrados e estatísticas agregadas do racha. Single-tenant — atende um único grupo de ~10–20 jogadores.
 
 > **Pagamentos / assinatura ficam fora do MVP.** Podem voltar como sprint dedicada no pós-MVP — quando voltarem, adicionar a spec `pagamentos.md` correspondente.
 
@@ -38,12 +38,13 @@ App mobile (Flutter) para gerir o "futebol de segunda" da turma: confirmação d
 
 ## Glossário rápido
 
-- **Racha** — a partida de segunda-feira (sinônimo de "match")
+- **Racha** — o encontro semanal da turma; não é sinônimo de partida curta
+- **Partida curta** — jogo dentro do racha, normalmente de 8 minutos ou até 2 gols; não é persistido no MVP
 - **Mensalista** — jogador rotulado como fixo (`player_type: montly`). No MVP é só uma label organizacional; não há cobrança associada.
 - **Avulso** — jogador rotulado como eventual (`player_type: casual`). Também só uma label no MVP.
 - **Presença** — status do jogador para um racha: `confirmed` | `declined` | `pending`
 - **Lista de espera** — confirmações além do `max_players` do racha
-- **Ferramentas de quadra** — sorteio, cronômetro e placar. Disponíveis para qualquer usuário, vivem em memória (Riverpod), **não persistem**.
+- **Ferramentas de quadra** — sorteio, cronômetro e placar. Disponíveis para qualquer usuário, vivem em memória (Riverpod), **não persistem**. O sorteio vale apenas uma vez/rodada.
 - **Admin** — player com `admin: true` (organizador do racha, pode tudo)
 - **Player** — player com `admin: false`
 
@@ -66,4 +67,4 @@ bundle exec sidekiq                    # worker
 ## Variáveis de ambiente (resumo)
 
 - Mobile: `API_BASE_URL`, `FCM_SENDER_ID`
-- Backend: `DATABASE_URL`, `REDIS_URL`, `JWT_SECRET`, `FCM_SERVER_KEY`
+- Backend: `DATABASE_URL`, `REDIS_URL`, `JWT_SECRET`, `FCM_SERVER_KEY`, `RACHA_WEEKDAY`, `RACHA_TIME`, `RACHA_LOCATION`, `RACHA_MAX_PLAYERS`

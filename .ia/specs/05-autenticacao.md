@@ -18,7 +18,7 @@
 5. Jogador abre o link no app → tela "Aceitar convite":
    - Pré-preenche nome (editável)
    - Pede senha + confirmação
-   - Pede posição preferida
+   - Pede para informar se é goleiro
 6. App envia para `POST /api/v1/users/accept_invitation`
 7. Server valida token, define senha (bcrypt), ativa o user, emite access + refresh JWT
 
@@ -53,7 +53,7 @@
 
 | Role | Pode |
 |---|---|
-| `admin` | Tudo: criar/editar matches, convidar jogadores, sortear times, lançar stats, mudar label de qualquer jogador |
+| `admin` | Tudo: criar/editar sessões semanais, convidar jogadores, sortear times, lançar stats, mudar label de qualquer jogador |
 | `player` | Confirmar/cancelar a própria presença, editar próprio perfil, ver listas e ranking |
 
 - O **primeiro user criado** no banco é o `admin` (organizador da turma). Configurado via seeds.
@@ -64,8 +64,8 @@
 Cada recurso tem uma `Policy`. Exemplos:
 
 ```ruby
-# app/policies/match_policy.rb
-class MatchPolicy < ApplicationPolicy
+# app/policies/weekly_session_policy.rb
+class WeeklySessionPolicy < ApplicationPolicy
   def create?  = user.admin?
   def update?  = user.admin?
   def show?    = true   # qualquer logado vê
@@ -79,7 +79,7 @@ class AttendancePolicy < ApplicationPolicy
 end
 ```
 
-Controllers chamam `authorize @match` no início das ações. Em falha, retornam `403`.
+Controllers chamam `authorize @weekly_session` no início das ações. Em falha, retornam `403`.
 
 ## Sessão offline
 

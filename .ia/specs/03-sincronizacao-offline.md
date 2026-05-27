@@ -45,21 +45,21 @@ A UI lê do **DB local** (Drift) via streams reativas. Escritas são aplicadas l
 ## Fluxo de pull (server → local)
 
 ```
-GET /api/v1/sync?since=<iso8601>&entities=users,matches,attendances,match_stats
+GET /api/v1/sync?since=<iso8601>&entities=users,weekly_sessions,attendances,session_stats
 
 Resposta:
 {
   "server_time": "2026-05-26T20:15:00Z",
   "entities": {
     "users":       [ { ...record, updated_at, deleted_at }, ... ],
-    "matches":     [ ... ],
+    "weekly_sessions": [ ... ],
     "attendances": [ ... ],
-    "match_stats": [ ... ]
+    "session_stats": [ ... ]
   }
 }
 ```
 
-> Sorteio de times, cronômetro e placar **não sincronizam** — são estado em memória no app do admin (Riverpod), descartado ao sair da tela ou fechar o app.
+> Partidas curtas, sorteio de times, cronômetro e placar **não sincronizam** — são estado em memória no app (Riverpod), descartado ao sair da tela ou fechar o app. A sessão semanal sincroniza presença e estatísticas agregadas, mas não salva times sorteados nem placar de cada partida curta.
 
 > Avaliações de habilidade (`skill_ratings`) têm regra de privacidade: o client pode enviar/criar/atualizar apenas as notas dadas pelo usuário logado, mas o pull não retorna avaliações individuais de outros usuários. A média interna (`users.skill_score`) é calculada pelo server e usada apenas pelo sistema, sem exibição na UI.
 
@@ -133,7 +133,7 @@ Respostas:
 
 ### `GET /api/v1/sync` (pull)
 
-Query: `since=<iso8601>` (default = epoch), `entities=users,matches,...` (default = todas)
+Query: `since=<iso8601>` (default = epoch), `entities=users,weekly_sessions,...` (default = todas)
 
 Resposta: como descrito acima.
 

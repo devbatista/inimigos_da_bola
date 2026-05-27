@@ -53,7 +53,7 @@ lib/
 - Classes/Enums: `PascalCase`
 - Arquivos: `snake_case.dart`
 - Constantes top-level: `lowerCamelCase` (Dart convention — não `UPPER_CASE`)
-- Providers: sufixo `Provider` (`currentMatchProvider`)
+- Providers: sufixo `Provider` (`currentWeeklySessionProvider`)
 - Notifiers: sufixo `Notifier` (`AttendanceNotifier`)
 
 ### Testes
@@ -106,7 +106,7 @@ Códigos em `SCREAMING_SNAKE_CASE`, listados em `config/error_codes.rb` (uma ún
 - Classes: `PascalCase`
 - Métodos/variáveis: `snake_case`
 - Constantes: `SCREAMING_SNAKE_CASE`
-- Endpoints REST padrão (`index`, `show`, `create`, `update`, `destroy`). Ações custom em endpoints membros (`POST /matches/:id/stats` para lançar gols em lote).
+- Endpoints REST padrão (`index`, `show`, `create`, `update`, `destroy`). Ações custom em endpoints membros (`POST /weekly_sessions/:id/stats` para lançar gols em lote).
 
 ### Testes
 

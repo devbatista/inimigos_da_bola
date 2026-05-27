@@ -78,31 +78,31 @@ lib/
 app/
 ├── controllers/
 │   └── api/v1/
-│       ├── matches_controller.rb
+│       ├── weekly_sessions_controller.rb
 │       ├── attendances_controller.rb
 │       ├── teams_controller.rb
 │       ├── stats_controller.rb
 │       └── sync_controller.rb         # GET /api/v1/sync (pull) + endpoints de upsert
 ├── services/                          # regras de negócio (uma classe por caso de uso)
 │   ├── attendance/confirm.rb
-│   ├── matches/create_weekly.rb
+│   ├── weekly_sessions/create_current.rb
 │   └── sync/apply_mutation.rb
 ├── models/                            # ActiveRecord (validações estruturais e escopos)
 ├── serializers/                       # Blueprinter ou jsonapi-serializer
 ├── jobs/                              # Sidekiq
-│   ├── matches/create_weekly_job.rb   # cron: cria o Match da semana toda segunda
+│   ├── weekly_sessions/create_current_job.rb # cron: cria a sessão semanal do racha
 │   ├── sync/cleanup_tombstones_job.rb
 │   └── notifications/push_job.rb
 ├── policies/                          # Pundit (autorização por recurso)
 └── config/
-    └── initializers/club_config.rb     # lê MATCH_WEEKDAY, MATCH_TIME, MATCH_LOCATION
+    └── initializers/club_config.rb     # lê RACHA_WEEKDAY, RACHA_TIME, RACHA_LOCATION
 ```
 
 **Regras**:
 - Controllers magros: parsing/serialização e chamada do service correspondente
 - Services: ponto único da regra de negócio; retornam resultado tipado (`Success` / `Failure`)
 - Models: validações estruturais (presença, formato), escopos, callbacks **somente** para `updated_at`
-- **Config do racha fixo** vem de variáveis de ambiente do backend: `MATCH_WEEKDAY`, `MATCH_TIME`, `MATCH_LOCATION` e, se necessário, `MATCH_MAX_PLAYERS`. Não há entidade no banco nem tela para editar esses valores no MVP; são configuração do deploy. Endpoint `GET /api/v1/club` expõe esses valores para o app sincronizar e exibir.
+- **Config do racha fixo** vem de variáveis de ambiente do backend: `RACHA_WEEKDAY`, `RACHA_TIME`, `RACHA_LOCATION` e, se necessário, `RACHA_MAX_PLAYERS`. Não há entidade no banco nem tela para editar esses valores no MVP; são configuração do deploy. Endpoint `GET /api/v1/club` expõe esses valores para o app sincronizar e exibir.
 
 ## API
 

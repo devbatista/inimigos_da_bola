@@ -80,7 +80,7 @@ Lista mínima a implementar em `lib/core/widgets/`:
 
 - **`AppButton`** — variantes: `primary` (fundo `leather`, texto `chalk`), `secondary` (borda `ink`, texto `ink`, fundo `chalk`), `ghost` (sem borda, texto `leather`), `danger` (fundo `danger`)
 - **`AppCard`** — superfície `chalk` ou `mist`, borda 1px `mist`, radius `lg`
-- **`PlayerTile`** — avatar circular + nome + chip de posição + chip de label (mensalista/avulso)
+- **`PlayerTile`** — avatar circular + nome + chip de goleiro quando aplicável + chip de label (mensalista/avulso)
 - **`AttendanceChip`** — chip colorido por status: `confirmed` (verde `success.subtle`), `declined` (cinza), `pending` (âmbar)
 - **`StatusBanner`** — banner topo da tela mostrando "Offline" / "Sincronizando..." / "Atualizado agora"
 - **`BottomSheet`** padrão — header com handle, padding `lg`, surface `chalk`

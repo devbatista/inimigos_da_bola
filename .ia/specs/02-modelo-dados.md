@@ -10,14 +10,14 @@
 ## Diagrama ER (texto)
 
 ```
-users ──< attendances >── matches
+users ──< attendances >── weekly_sessions
   │                         │
   ├──< skill_ratings >── users
                             │
-                            └─< match_stats >── users
+                            └─< session_stats >── users
 ```
 
-> **Sorteio de times, cronômetro e placar não têm tabelas** — são ferramentas temporárias em memória no app do admin durante a partida, e descartadas ao final. Gols/assistências registrados pelo admin no fim do jogo persistem em `match_stats`.
+> **Partidas curtas, sorteio de times, cronômetro e placar não têm tabelas** — são ferramentas temporárias em memória durante a quadra, e descartadas ao final. O racha pode ter várias partidas curtas de 8 minutos ou até 2 gols, com times mudando a cada rodada. Gols/assistências registrados no fim do racha persistem agregados em `session_stats`, vinculados à sessão semanal.
 
 ## Schema Postgres (server)
 
@@ -32,7 +32,7 @@ users ──< attendances >── matches
 | `role` | enum (`admin`, `player`) | not null, default `player` |
 | `player_type` | enum (`monthly`, `casual`) | label organizacional (mensalista/avulso); sem implicação financeira no MVP; default `casual` |
 | `skill_score` | decimal(5,2) | média interna de habilidade (0–100), calculada pelo sistema a partir de `skill_ratings`; não editável pela UI e não exibida aos usuários |
-| `preferred_position` | enum (`goalkeeper`, `defender`, `midfielder`, `forward`, `any`) | default `any` |
+| `goalkeeper` | boolean | indica se o player atua como goleiro; default `false` |
 | `encrypted_password`, etc. | (campos do Devise) | — |
 | `created_at`, `updated_at`, `deleted_at`, `version` | — | colunas de sync |
 
@@ -57,19 +57,19 @@ Regras:
 - `users.skill_score` é recalculado pelo sistema como média das notas recebidas, limitado ao intervalo 0–100.
 - A média também é privada: não aparece em lista de jogadores, perfil ou ranking; é usada apenas por regras internas, como balanceamento do sorteio.
 
-### `matches`
+### `weekly_sessions`
 
 | Coluna | Tipo | Notas |
 |---|---|---|
 | `id` | uuid | PK |
-| `scheduled_at` | timestamp | data + hora do racha (UTC); sempre uma segunda-feira no MVP |
-| `max_players` | integer | default 14 |
-| `status` | enum (`scheduled`, `in_progress`, `finished`, `canceled`) | not null |
+| `scheduled_at` | timestamp | data + hora da sessão semanal do racha (UTC); sempre no dia definido por `RACHA_WEEKDAY` |
+| `max_players` | integer | default 20 |
+| `status` | enum (`scheduled`, `closed`, `canceled`) | not null |
 | `created_at`, `updated_at`, `deleted_at`, `version` | — | colunas de sync |
 
 Índices: `scheduled_at`, `(deleted_at, updated_at)`.
 
-> **Data/dia recorrente, local e horário são fixos no MVP**. O dia recorrente, o nome da quadra e o horário padrão vêm de variáveis de ambiente do backend (`MATCH_WEEKDAY`, `MATCH_TIME`, `MATCH_LOCATION`) e são expostos via endpoint `GET /api/v1/club` para o app consumir. Não há edição desses valores pela UI. Um Sidekiq cron job (`Matches::CreateWeeklyJob`) cria o `Match` da semana corrente com base nessa configuração se ele ainda não existir. Se um dia o local mudar para um racha específico, adicionar uma coluna `location_override` — não está no MVP.
+> **Data/dia recorrente, local e horário são fixos no MVP**. O dia recorrente, o nome da quadra e o horário padrão vêm de variáveis de ambiente do backend (`RACHA_WEEKDAY`, `RACHA_TIME`, `RACHA_LOCATION`) e são expostos via endpoint `GET /api/v1/club` para o app consumir. Não há edição desses valores pela UI. Um Sidekiq cron job (`WeeklySessions::CreateCurrentJob`) cria a sessão semanal do racha com base nessa configuração se ela ainda não existir. Se um dia o local mudar para um racha específico, adicionar uma coluna `location_override` — não está no MVP.
 
 ### `attendances`
 
@@ -77,25 +77,25 @@ Regras:
 |---|---|---|
 | `id` | uuid | PK |
 | `user_id` | uuid | FK users |
-| `match_id` | uuid | FK matches |
+| `weekly_session_id` | uuid | FK weekly_sessions |
 | `status` | enum (`confirmed`, `declined`, `pending`) | not null, default `pending` |
 | `waitlist_position` | integer | `NULL` se confirmado dentro do limite; > 0 = ordem na espera |
 | `created_at`, `updated_at`, `deleted_at`, `version` | — | colunas de sync |
 
-Índices: `(user_id, match_id)` unique parcial onde `deleted_at IS NULL`; `match_id`.
+Índices: `(user_id, weekly_session_id)` unique parcial onde `deleted_at IS NULL`; `weekly_session_id`.
 
-### `match_stats`
+### `session_stats`
 
 | Coluna | Tipo | Notas |
 |---|---|---|
 | `id` | uuid | PK |
-| `match_id` | uuid | FK matches |
+| `weekly_session_id` | uuid | FK weekly_sessions |
 | `user_id` | uuid | FK users |
 | `goals` | integer | default 0 |
 | `assists` | integer | default 0 |
 | `created_at`, `updated_at`, `deleted_at`, `version` | — | — |
 
-Índices: `(match_id, user_id)` unique parcial.
+Índices: `(weekly_session_id, user_id)` unique parcial.
 
 ## Schema local Flutter (Drift)
 
@@ -106,7 +106,7 @@ Espelha as tabelas sincronizáveis (mesmas colunas e tipos, exceto `encrypted_pa
 | Coluna | Tipo | Notas |
 |---|---|---|
 | `id` | text (uuid v7) | PK |
-| `entity` | text | `'users'`, `'matches'`, etc. |
+| `entity` | text | `'users'`, `'weekly_sessions'`, etc. |
 | `entity_id` | text (uuid) | ID do registro afetado |
 | `operation` | text (`create`, `update`, `delete`) | — |
 | `mutation_id` | text (uuid v7) | enviado ao server para idempotência |

@@ -11,7 +11,7 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 - CI básico (GitHub Actions): lint + test em PR; deploy automático em `main` → staging
 - Deploy "hello world" do Rails em Railway/Render
 - App em iOS Simulator + Android Emulator com tela mostrando "Inimigos da Bola" estilizada (paleta do [06-design-ui.md](06-design-ui.md))
-- Variáveis de ambiente `MATCH_WEEKDAY`, `MATCH_TIME`, `MATCH_LOCATION` para data/dia recorrente, horário e local fixos; endpoint `GET /api/v1/club`
+- Variáveis de ambiente `RACHA_WEEKDAY`, `RACHA_TIME`, `RACHA_LOCATION` para data/dia recorrente, horário e local fixos; endpoint `GET /api/v1/club`
 
 **Entrega**: dev pode rodar tudo localmente; staging up.
 
@@ -19,7 +19,7 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 
 ## Sprint 1 — Auth + Jogadores (offline-ready)
 
-- Backend: `users` (com `role`, `player_type`, `skill_score`, `preferred_position`), `skill_ratings`, endpoints de auth (sign_in, refresh, sign_out), convite (`invitations` + `accept_invitation`)
+- Backend: `users` (com `role`, `player_type`, `skill_score`, `goalkeeper`), `skill_ratings`, endpoints de auth (sign_in, refresh, sign_out), convite (`invitations` + `accept_invitation`)
 - Mobile: telas de login, convite (aceitar via deep link), perfil próprio
 - Drift configurado com tabela `users` espelhada
 - Repository `UserRepository` lê de Drift; primeiro `Stream<List<User>>` no app
@@ -45,11 +45,11 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 
 ---
 
-## Sprint 3 — Partidas + Confirmação de Presença
+## Sprint 3 — Sessão semanal + Confirmação de Presença
 
-- Backend: `matches`, `attendances`, job `Matches::CreateWeeklyJob` (cron Sidekiq toda segunda 8h)
-- Endpoints: `GET /api/v1/matches/current`, `POST /api/v1/matches/:id/attendances`
-- Pundit policies (`MatchPolicy`, `AttendancePolicy`)
+- Backend: `weekly_sessions`, `attendances`, job `WeeklySessions::CreateCurrentJob` (cron Sidekiq no dia configurado às 8h)
+- Endpoints: `GET /api/v1/weekly_sessions/current`, `POST /api/v1/weekly_sessions/:id/attendances`
+- Pundit policies (`WeeklySessionPolicy`, `AttendancePolicy`)
 - Mobile: home com card do racha da semana, botão "Vou!"/"Não vou", contador, listas (confirmados/lista de espera/não vão/pendentes)
 - Lógica de waitlist (promoção do primeiro da fila quando alguém cancela) — implementada server-side, refletida via sync
 - Componente `AttendanceChip` e `PlayerTile` em `lib/core/widgets/`
@@ -66,10 +66,10 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 - **Sorteio**:
   - Algoritmo snake draft em `lib/features/teams/domain/draw_algorithm.dart` (função pura, testável)
   - Tela com seleção de participantes (default: confirmados do racha atual), configuração de número de times, botão sortear, refazer, troca manual drag-and-drop, edição inline dos nomes
-  - Sem endpoint, sem Drift
+  - Sem endpoint, sem Drift; sorteio vale apenas uma vez/rodada e não é salvo
 - **Modo Jogo** (cronômetro + placar fullscreen):
   - Placar grande (`Time A` / `Time B`, editáveis), botões `+`/`−`
-  - Cronômetro progressivo ou regressivo (configurável), `Iniciar`/`Pausar`/`Resetar`, indicador de período
+  - Cronômetro progressivo ou regressivo (default 8 minutos), `Iniciar`/`Pausar`/`Resetar`, destaque quando um time chega a 2 gols
   - Wakelock ativo enquanto a tela está aberta
   - Continua contando matematicamente em background (recalcula ao voltar do background)
 - Testes unitários do algoritmo (distribuição balanceada, respeito de goleiros) e do cronômetro (resiliência a background)
@@ -80,13 +80,13 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 
 ## Sprint 5 — Estatísticas
 
-- Backend: `match_stats`, endpoint `POST /api/v1/matches/:id/stats` (batch)
+- Backend: `session_stats`, endpoint `POST /api/v1/weekly_sessions/:id/stats` (batch)
 - Endpoint `GET /api/v1/stats/leaderboard?period=month|year`
 - Mobile: tela "Lançar stats" (admin pós-jogo)
 - Tela "Artilharia" com ranking
-- Seção "Histórico" no perfil do jogador (matches participados, gols, assistências)
+- Seção "Histórico" no perfil do jogador (sessões semanais participadas, gols, assistências)
 
-**Entrega**: admin lança stats no fim do jogo (offline ok); ranking público atualiza.
+**Entrega**: admin lança stats agregados no fim do racha (offline ok); ranking público atualiza.
 
 ---
 
@@ -95,7 +95,7 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 - Backend: integração com FCM (gem `googleauth` + chamadas REST do FCM v1)
 - Coluna `users.fcm_token`; endpoint `POST /api/v1/users/me/fcm_token`
 - Notificações:
-  - "Racha aberto" (segunda manhã, disparado pelo `CreateWeeklyJob`)
+  - "Racha aberto" (segunda manhã, disparado pelo `WeeklySessions::CreateCurrentJob`)
   - "Lembrete: jogo em 1h" (job cron)
   - "Abriu vaga! Você está confirmado" (quando promovido da lista de espera)
   - Sync silencioso (data message) em mudanças relevantes
