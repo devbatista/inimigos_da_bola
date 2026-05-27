@@ -19,6 +19,7 @@ App mobile (Flutter) para gerir o "futebol de segunda" da turma: confirmação d
 3. **Código em inglês, UI em pt-BR** — identificadores, branches, commits, comentários em inglês; textos visíveis ao usuário em português.
 4. **UUID v7** como PK de toda entidade sincronizável.
 5. **Sem cores literais** nos widgets — sempre via tokens do design system ([06-design-ui.md](.ia/specs/06-design-ui.md)).
+6. **Jamais esquecer acentuação** — textos em português devem usar acentuação correta.
 
 ## Índice de specs (`.ia/specs/`)
 
