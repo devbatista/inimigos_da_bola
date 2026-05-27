@@ -31,7 +31,7 @@ users ──< attendances >── weekly_sessions
 | `phone` | string | opcional, E.164 |
 | `role` | enum (`admin`, `player`) | not null, default `player` |
 | `player_type` | enum (`monthly`, `casual`) | label organizacional (mensalista/avulso); sem implicação financeira no MVP; default `casual` |
-| `skill_score` | decimal(5,2) | média interna de habilidade (0–100), calculada pelo sistema a partir de `skill_ratings`; não editável pela UI e não exibida aos usuários |
+| `skill_score` | decimal(5,2) | média de habilidade (0–100), calculada pelo sistema a partir de `skill_ratings`; não editável pela UI; exibida apenas para o próprio usuário |
 | `goalkeeper` | boolean | indica se o player atua como goleiro; default `false` |
 | `encrypted_password`, etc. | (campos do Devise) | — |
 | `created_at`, `updated_at`, `deleted_at`, `version` | — | colunas de sync |
@@ -55,7 +55,7 @@ Regras:
 - Cada par avaliador/avaliado tem uma nota ativa. Reavaliar atualiza a nota existente, mas só é permitido após 1 mês da última avaliação desse par.
 - Notas individuais nunca são exibidas para usuários.
 - `users.skill_score` é recalculado pelo sistema como média das notas recebidas, limitado ao intervalo 0–100.
-- A média também é privada: não aparece em lista de jogadores, perfil ou ranking; é usada apenas por regras internas, como balanceamento do sorteio.
+- A média é privada entre jogadores: cada usuário vê apenas o próprio `skill_score` na tela principal. Médias de outros players não aparecem em lista de jogadores, perfil ou ranking; o sistema usa esses valores em regras internas, como balanceamento do sorteio.
 
 ### `weekly_sessions`
 

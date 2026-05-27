@@ -25,7 +25,7 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 - Repository `UserRepository` lê de Drift; primeiro `Stream<List<User>>` no app
 - Sync engine **v0**: apenas push (mutações → server), sem pull ainda. Pull manual a cada login.
 - Tela "Lista de jogadores" (admin) mostrando o que veio do server
-- Fluxo de avaliação: players dão notas de 0 a 100 para os demais; reavaliação do mesmo player só após 1 mês; notas e médias não aparecem na UI
+- Fluxo de avaliação: players dão notas de 0 a 100 para os demais; reavaliação do mesmo player só após 1 mês; cada usuário vê o próprio `skill_score`, mas notas individuais e médias de outros players não aparecem na UI
 
 **Entrega**: admin cadastra e convida jogadores; jogadores aceitam convite e fazem login. Tudo persiste local.
 

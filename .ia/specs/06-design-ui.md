@@ -81,6 +81,7 @@ Lista mínima a implementar em `lib/core/widgets/`:
 - **`AppButton`** — variantes: `primary` (fundo `leather`, texto `chalk`), `secondary` (borda `ink`, texto `ink`, fundo `chalk`), `ghost` (sem borda, texto `leather`), `danger` (fundo `danger`)
 - **`AppCard`** — superfície `chalk` ou `mist`, borda 1px `mist`, radius `lg`
 - **`PlayerTile`** — avatar circular + nome + chip de goleiro quando aplicável + chip de label (mensalista/avulso)
+- **`SkillScoreBadge`** — exibe o `skill_score` do usuário logado na Home (0–100); não usado para mostrar skill de outros players
 - **`SkillRatingSlider`** — slider de 0 a 100 para avaliação de habilidade; exibe apenas a nota que o usuário está dando/editando naquele momento
 - **`AttendanceChip`** — chip colorido por status: `confirmed` (verde `success.subtle`), `declined` (cinza), `pending` (âmbar)
 - **`StatusBanner`** — banner topo da tela mostrando "Offline" / "Sincronizando..." / "Atualizado agora"

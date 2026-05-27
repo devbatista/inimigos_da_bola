@@ -84,7 +84,7 @@ Resposta:
 
 > Partidas curtas, sorteio de times, cronômetro e placar **não sincronizam** — são estado em memória no app (Riverpod), descartado ao sair da tela ou fechar o app. A sessão semanal sincroniza presença e estatísticas agregadas, mas não salva times sorteados nem placar de cada partida curta.
 
-> Avaliações de habilidade (`skill_ratings`) têm regra de privacidade: o client pode enviar/criar/atualizar apenas as notas dadas pelo usuário logado, mas o pull não retorna avaliações individuais de outros usuários. A média interna (`users.skill_score`) é calculada pelo server e usada apenas pelo sistema, sem exibição na UI.
+> Avaliações de habilidade (`skill_ratings`) têm regra de privacidade: o client pode enviar/criar/atualizar apenas as notas dadas pelo usuário logado, mas o pull não retorna avaliações individuais de outros usuários. A média (`users.skill_score`) é calculada pelo server; a UI exibe apenas o `skill_score` do usuário logado na tela principal, sem mostrar médias de outros players.
 
 - Sync engine itera cada entity e faz upsert no Drift por `id`
 - Registros com `deleted_at` preenchido são tombstones → DAO marca como deletado localmente (ou apaga, dependendo da policy)

@@ -14,6 +14,7 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 - Card destacado "Racha de segunda — DD/MM" no topo
   - Botão grande "Vou!" / "Não vou" (toggle do próprio jogador)
   - Contador `X de Y confirmados` (X = confirmados, Y = `max_players`)
+  - Meu skill: valor do `skill_score` do usuário logado (0–100)
   - Local e horário vindos da configuração fixa do backend
 - Listas separadas:
   - **Confirmados** (avatar + nome + marcador de goleiro quando aplicável + label mensalista/avulso)
@@ -38,7 +39,8 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 - A nota é escolhida em um range slider de 0 a 100
 - Não permite autoavaliação
 - Cada player pode alterar a própria avaliação enviada para outro player apenas após 1 mês da última nota dada para aquele mesmo player
-- A UI não mostra notas individuais recebidas, notas dadas por outros, nem a média de habilidade de ninguém
+- A UI não mostra notas individuais recebidas, notas dadas por outros, nem a média de habilidade de outros players
+- A tela principal mostra apenas o `skill_score` do usuário logado
 - O sistema recalcula uma média interna (`skill_score`) por player para usar no balanceamento do sorteio
 
 ### Regras de domínio

@@ -29,7 +29,7 @@ O usuário-alvo do MVP é **a turma do organizador** — não é um SaaS multi-g
 
 ### Dentro
 - Cadastro de jogadores com marcação de goleiro (`goalkeeper: true/false`) e **label "mensalista" ou "avulso"** (organização apenas; sem fluxo de pagamento associado no MVP)
-- Avaliação interna de habilidade: todos os players avaliam os demais com nota de 0 a 100; o sistema usa apenas a média, sem expor notas individuais ou médias na UI
+- Avaliação de habilidade: todos os players avaliam os demais com nota de 0 a 100; o sistema calcula a média e cada usuário vê apenas o próprio `skill_score` na tela principal
 - Confirmação de presença para o racha da semana corrente, com lista visível dos confirmados
 - Lista de espera quando passa do limite de vagas
 - **Sorteio de times** (snake draft por média interna de habilidade) — ferramenta **temporária na quadra**, resultado fica em memória no dispositivo do admin, **não persiste em banco**
@@ -56,7 +56,7 @@ O usuário-alvo do MVP é **a turma do organizador** — não é um SaaS multi-g
 | **Partida curta** | Jogo de quadra dentro do racha, com duração de 8 minutos ou até 2 gols. Não tem tabela própria, não é sincronizada e não é persistida no MVP. |
 | **Mensalista** | Jogador com `player_type = monthly`. No MVP é só uma label organizacional (sem cobrança); quando pagamento voltar, será o jogador com assinatura ativa. |
 | **Avulso** | Jogador com `player_type = casual`. No MVP é só uma label; quando pagamento voltar, será quem paga por partida. |
-| **Média de habilidade** | Nota interna de 0 a 100 calculada a partir das avaliações que os players fazem dos demais. Não é exibida para usuários nem editada manualmente; apenas o sistema usa no sorteio. |
+| **Média de habilidade** | Nota de 0 a 100 calculada a partir das avaliações que os players fazem dos demais. Cada usuário vê apenas o próprio `skill_score`; notas individuais e médias de outros players não são exibidas. |
 | **Presença** | Estado do jogador para um racha: `confirmed`, `declined`, `pending`. |
 | **Lista de espera** | Confirmações além de `max_players`; primeiras na fila quando alguém cancela. |
 | **Sorteio** | Algoritmo de balanceamento que distribui os confirmados em times. Resultado é volátil: vale apenas para uma rodada/partida curta e vive só no app durante a sessão. |
