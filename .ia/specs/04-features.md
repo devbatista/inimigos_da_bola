@@ -147,7 +147,6 @@ Arquivo: `lib/features/teams/domain/draw_algorithm.dart` (função pura, testáv
   - **Cronômetro no centro**: `MM:SS` em fonte gigante
     - Modo configurável: **progressivo** (sobe desde zero) ou **regressivo** (default 08:00, configurável)
     - Botões: `Iniciar`, `Pausar`, `Resetar`
-    - Indicador opcional de período (`1º tempo`, `Intervalo`, `2º tempo`) — chip secundário tocável
   - Botão "Fechar" (volta para a tela anterior; estado se perde)
 - Wakelock ativo enquanto a tela estiver aberta (não deixa o celular dormir)
 
@@ -165,7 +164,7 @@ Arquivo: `lib/features/teams/domain/draw_algorithm.dart` (função pura, testáv
 
 ### Estado
 
-- `GameModeState { scoreA, scoreB, teamAName, teamBName, timerMode, elapsed, isRunning, period }` em Riverpod `AutoDispose`
+- `GameModeState { scoreA, scoreB, teamAName, teamBName, timerMode, elapsed, isRunning }` em Riverpod `AutoDispose`
 - Sem persistência, sem sync
 
 ### Comportamento offline
