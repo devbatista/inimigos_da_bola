@@ -2,12 +2,13 @@
 
 ## Geral (Flutter + Rails)
 
-- **Código em inglês**: identificadores, nomes de arquivos, branches, commits, comentários
+- **Código em inglês**: identificadores, nomes de arquivos e branches
+- **Comentários em português**: comentários de código devem ser escritos em pt-BR, com acentuação correta
 - **UI em pt-BR**: strings visíveis ao usuário, mensagens de erro, labels — sempre via `intl` (`AppLocalizations`)
 - **Timestamps**: UTC no banco e na API; conversão para `America/Sao_Paulo` só na camada de view
 - **IDs**: UUID v7 em todas as entidades sincronizáveis
 - **Datas em texto**: formato `dd/MM/yyyy`, horário `HH:mm` (24h)
-- **Idioma de commits**: inglês, Conventional Commits (`feat:`, `fix:`, `chore:`, `refactor:`, `test:`, `docs:`)
+- **Idioma de commits**: português, mantendo Conventional Commits (`feat:`, `fix:`, `chore:`, `refactor:`, `test:`, `docs:`). Ex.: `feat: adiciona confirmação avulsa do admin`.
 - **Branches**: `feat/<short-slug>`, `fix/<short-slug>`, `chore/<short-slug>`
 - **PRs**: pequenos (idealmente < 400 linhas mudadas); descrição explica o "porquê", não o "o quê"
 
