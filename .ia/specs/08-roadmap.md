@@ -8,12 +8,12 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 
 - Scaffolding Flutter (estrutura `lib/core/*`, `lib/features/*`, `intl`, `riverpod_generator`, `freezed`, `drift`)
 - Scaffolding Rails API (`--api`, Postgres, devise, devise-jwt, pundit, sidekiq, blueprinter, rspec)
-- CI básico (GitHub Actions): lint + test em PR; deploy automático em `main` → staging
-- Deploy "hello world" do Rails em Railway/Render
+- CI básico (GitHub Actions): lint + test em PR, obrigatório antes de merge na `main`
+- Sem deploy automático por enquanto
 - App em iOS Simulator + Android Emulator com tela mostrando "Inimigos da Bola" estilizada (paleta do [06-design-ui.md](06-design-ui.md))
 - Variáveis de ambiente `RACHA_WEEKDAY`, `RACHA_TIME`, `RACHA_LOCATION` para data/dia recorrente, horário e local fixos; endpoint `GET /api/v1/club`
 
-**Entrega**: dev pode rodar tudo localmente; staging up.
+**Entrega**: dev pode rodar tudo localmente; PRs só entram na `main` com CI verde.
 
 ---
 

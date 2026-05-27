@@ -137,4 +137,5 @@ Códigos em `SCREAMING_SNAKE_CASE`, listados em `config/error_codes.rb` (uma ún
 - CI roda em todo PR:
   - **Flutter**: `flutter analyze`, `flutter test`, `dart format --set-exit-if-changed`
   - **Rails**: `bundle exec rspec`, `bundle exec rubocop`, `bundle exec brakeman`
-- Deploy em `main` (continuous deploy para staging; produção via tag)
+- Merge na `main` só com CI verde.
+- Sem deploy automático por enquanto.
