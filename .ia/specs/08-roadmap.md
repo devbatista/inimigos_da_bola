@@ -96,14 +96,15 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 - Backend: integração com FCM (gem `googleauth` + chamadas REST do FCM v1)
 - Coluna `users.fcm_token`; endpoint `POST /api/v1/users/me/fcm_token`
 - Notificações:
-  - "Racha aberto" (segunda manhã, disparado pelo `WeeklySessions::CreateCurrentJob`)
-  - "Lembrete: jogo em 1h" (job cron)
-  - "Abriu vaga! Você está confirmado" (quando promovido da lista de espera)
+  - Todos: "Racha aberto" (segunda manhã, disparado pelo `WeeklySessions::CreateCurrentJob`)
+  - Todos: "Lembrete: jogo em 1h" (job cron)
+  - Player: "Abriu vaga! Você está confirmado" (quando promovido da lista de espera)
+  - Admin: nova confirmação, cancelamento de presença e alteração de presença avulsa
   - Sync silencioso (data message) em mudanças relevantes
 - Mobile: setup de FCM (firebase_messaging), permissão, background handler que dispara sync
 - Telemetria mínima: log de entregas e clicks
 
-**Entrega**: jogadores são lembrados sem o admin precisar mandar áudio no WhatsApp.
+**Entrega**: jogadores e admin recebem lembretes e avisos relevantes sem o admin precisar mandar áudio no WhatsApp.
 
 ---
 

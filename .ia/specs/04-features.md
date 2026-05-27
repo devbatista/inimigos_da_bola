@@ -196,12 +196,16 @@ Arquivo: `lib/features/teams/domain/draw_algorithm.dart` (função pura, testáv
 - **Convite de presença** (segunda de manhã, após `WeeklySessions::CreateCurrentJob` rodar): "O racha de hoje está aberto. Você vai?"
 - **Lembrete de jogo** (1h antes do `scheduled_at`): "Em 1h tem racha. Já confirmou?"
 - **Promovido da lista de espera**: "Abriu vaga! Você está confirmado para hoje."
+- **Admin: nova confirmação**: "João confirmou presença. Agora são 12 confirmados."
+- **Admin: cancelamento de presença**: "Pedro cancelou presença. Uma vaga foi liberada."
+- **Admin: presença avulsa adicionada/removida**: aviso quando outro device/admin alterar presença avulsa
 - **Sync silencioso** (data message, não exibe notificação): trigger para o app puxar atualizações
 
 ### Regras
 
 - Apenas `admin` registra stats
 - Stats podem ser editados até 24h após o racha (depois disso, locked)
+- Admin também recebe notificações push. Lembretes gerais vão para todos os usuários logados; avisos operacionais de presença/lista de espera vão para admins.
 - FCM tokens são armazenados em `user.fcm_token` (coluna a adicionar quando push for implementado no Sprint 6)
 
 ### Endpoints

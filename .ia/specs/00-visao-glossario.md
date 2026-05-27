@@ -37,7 +37,7 @@ O usuário-alvo do MVP é **a turma do organizador** — não é um SaaS multi-g
 - **Cronômetro + placar** durante as partidas curtas — também ferramentas temporárias em memória, **não persistem em banco**
 - Registro agregado de gols e assistências por sessão semanal do racha (esses sim persistem, agregados ao perfil/ranking)
 - Ranking de artilheiros e histórico de presença
-- Notificações push (lembrete de confirmação, lembrete de jogo)
+- Notificações push para players e admin (lembrete de confirmação, lembrete de jogo e avisos operacionais para admin)
 - **Funcionamento offline-first** em todas as operações de leitura e na maioria das de escrita
 
 ### Fora do MVP
