@@ -13,7 +13,7 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 **Home (tela principal do app)**
 - Card destacado "Racha de segunda — DD/MM" no topo
   - Botão grande "Vou!" / "Não vou" (toggle do próprio jogador)
-  - Contador `X de Y confirmados` (X = confirmados, Y = `max_players`)
+  - Contador público `X de Y confirmados` (X = confirmados, Y = `max_players`), visível para todos os usuários logados
   - Meu skill: valor do `skill_score` do usuário logado (0–100)
   - Local e horário vindos da configuração fixa do backend
 - Listas separadas:
@@ -71,6 +71,7 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 
 - Confirmar/cancelar presença → chamada online imediata ao backend; se não houver rede, a ação não é concluída e a UI mantém o estado em cache
 - Lista de confirmados → renderizada do cache local com selo "Última atualização"
+- Quantidade de confirmados → visível para todos, lida do cache local e atualizada por sync/push silencioso
 - Cadastrar novo jogador (admin) → UUID v7 gerado local; sincroniza depois
 - Convite por link mágico → requer rede (server precisa gerar token assinado)
 - Promoção da lista de espera quando alguém cancela → resolvida imediatamente no server; outros devices recebem atualização via sync/push silencioso

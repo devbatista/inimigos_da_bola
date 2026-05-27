@@ -30,7 +30,7 @@ O usuário-alvo do MVP é **a turma do organizador** — não é um SaaS multi-g
 ### Dentro
 - Cadastro de jogadores com marcação de goleiro (`goalkeeper: true/false`) e **label "mensalista" ou "avulso"** (organização apenas; sem fluxo de pagamento associado no MVP)
 - Avaliação de habilidade: todos os players avaliam os demais com nota de 0 a 100; o sistema calcula a média e cada usuário vê apenas o próprio `skill_score` na tela principal
-- Confirmação de presença para o racha da semana corrente, com lista visível dos confirmados
+- Confirmação de presença para o racha da semana corrente, com quantidade e lista de confirmados visíveis para todos os usuários logados
 - Lista de espera quando passa do limite de vagas
 - **Sorteio de times** (snake draft por média interna de habilidade) — ferramenta **temporária na quadra**, resultado fica em memória no dispositivo do admin, **não persiste em banco**
 - **Cronômetro + placar** durante as partidas curtas — também ferramentas temporárias em memória, **não persistem em banco**

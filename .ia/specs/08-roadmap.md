@@ -50,7 +50,7 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 - Backend: `weekly_sessions`, `attendances`, job `WeeklySessions::CreateCurrentJob` (cron Sidekiq no dia configurado às 8h)
 - Endpoints: `GET /api/v1/weekly_sessions/current`, `POST /api/v1/weekly_sessions/:id/attendances`
 - Pundit policies (`WeeklySessionPolicy`, `AttendancePolicy`)
-- Mobile: home com card do racha da semana, botão "Vou!"/"Não vou", contador, listas (confirmados/lista de espera/não vão/pendentes)
+- Mobile: home com card do racha da semana, botão "Vou!"/"Não vou", contador público de confirmados, listas (confirmados/lista de espera/não vão/pendentes)
 - Lógica de waitlist (promoção do primeiro da fila quando alguém cancela) — implementada server-side, refletida via sync
 - Componente `AttendanceChip` e `PlayerTile` em `lib/core/widgets/`
 
