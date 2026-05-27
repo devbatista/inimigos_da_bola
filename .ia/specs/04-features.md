@@ -35,8 +35,9 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 
 **Avaliação de habilidade**
 - Todos os players avaliam os demais players com nota de 0 a 100
+- A nota é escolhida em um range slider de 0 a 100
 - Não permite autoavaliação
-- Cada player pode alterar a própria avaliação enviada para outro player
+- Cada player pode alterar a própria avaliação enviada para outro player apenas após 1 mês da última nota dada para aquele mesmo player
 - A UI não mostra notas individuais recebidas, notas dadas por outros, nem a média de habilidade de ninguém
 - O sistema recalcula uma média interna (`skill_score`) por player para usar no balanceamento do sorteio
 

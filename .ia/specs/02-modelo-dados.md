@@ -52,7 +52,7 @@ users ──< attendances >── weekly_sessions
 
 Regras:
 - Um player avalia os demais players; autoavaliação não é permitida.
-- Cada par avaliador/avaliado tem uma nota ativa. Reavaliar atualiza a nota existente.
+- Cada par avaliador/avaliado tem uma nota ativa. Reavaliar atualiza a nota existente, mas só é permitido após 1 mês da última avaliação desse par.
 - Notas individuais nunca são exibidas para usuários.
 - `users.skill_score` é recalculado pelo sistema como média das notas recebidas, limitado ao intervalo 0–100.
 - A média também é privada: não aparece em lista de jogadores, perfil ou ranking; é usada apenas por regras internas, como balanceamento do sorteio.
