@@ -54,7 +54,7 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 - Lógica de waitlist (promoção do primeiro da fila quando alguém cancela) — implementada server-side, refletida via sync
 - Componente `AttendanceChip` e `PlayerTile` em `lib/core/widgets/`
 
-**Entrega**: jogadores confirmam presença pelo app; admin vê quem vai estar lá. Tudo offline-first.
+**Entrega**: jogadores confirmam presença pelo app com envio imediato ao backend; admin vê quem vai estar lá. Leituras continuam via cache local, mas confirmação/cancelamento exige rede.
 
 ---
 

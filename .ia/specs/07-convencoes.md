@@ -43,6 +43,7 @@ lib/
 - **Repository é o único caminho de leitura/escrita.** Telas e providers nunca chamam Dio direto, nunca chamam DAO direto.
 - **Reads via Stream** (`Stream<List<T>>` do Drift). Telas usam `ref.watch(...Provider)` que envolve esse stream.
 - **Writes via Future**, com transação atômica (DB local + sync_queue).
+- **Exceção de presença**: confirmar/cancelar presença chama o backend imediatamente via repository e só atualiza o Drift após resposta; não entra em `sync_queue`.
 - **Riverpod**: usar `riverpod_generator` para todos os providers. Não declarar `Provider`/`StateProvider` manualmente.
 - **Models de domínio**: `freezed` para imutabilidade e cópia.
 - **Sem cor literal** fora de `lib/core/theme/` (regra do design system, ver [06-design-ui.md](06-design-ui.md)).

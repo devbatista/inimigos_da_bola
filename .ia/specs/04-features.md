@@ -66,11 +66,11 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 
 ### Comportamento offline
 
-- Confirmar/cancelar presença → mutação local + sync_queue; UI atualiza imediatamente
+- Confirmar/cancelar presença → chamada online imediata ao backend; se não houver rede, a ação não é concluída e a UI mantém o estado em cache
 - Lista de confirmados → renderizada do cache local com selo "Última atualização"
 - Cadastrar novo jogador (admin) → UUID v7 gerado local; sincroniza depois
 - Convite por link mágico → requer rede (server precisa gerar token assinado)
-- Promoção da lista de espera quando alguém cancela offline → resolvida no server quando reconectar; UI local pode mostrar previsão otimista (primeiro da lista vira "provavelmente confirmado")
+- Promoção da lista de espera quando alguém cancela → resolvida imediatamente no server; outros devices recebem atualização via sync/push silencioso
 
 ---
 

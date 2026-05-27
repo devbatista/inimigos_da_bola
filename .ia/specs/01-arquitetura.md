@@ -2,7 +2,7 @@
 
 ## Pilar: Offline-first
 
-A UI **sempre** lê do banco local (Drift/SQLite). Mutações são aplicadas localmente de forma otimista e enfileiradas para sincronização. O server é a fonte de verdade que reconcilia. Isso vale para todas as features do MVP (leitura e escrita) — não há, no escopo atual, nenhum fluxo online-only.
+A UI **sempre** lê do banco local (Drift/SQLite). A maior parte das mutações é aplicada localmente de forma otimista e enfileirada para sincronização. O server é a fonte de verdade que reconcilia. Exceção do MVP: confirmação/cancelamento de presença é online obrigatório e deve enviar push HTTP imediato ao backend, sem `sync_queue`, para garantir limite de vagas e lista de espera corretos.
 
 Detalhes em [03-sincronizacao-offline.md](03-sincronizacao-offline.md).
 
@@ -57,7 +57,7 @@ lib/
 └── main.dart
 ```
 
-**Regra invariável**: nenhuma tela ou provider lê da API diretamente. Sempre via repository, e o repository sempre lê do Drift. A camada de sync é a única que fala HTTP. Isso garante que tudo é offline-first por padrão.
+**Regra invariável**: nenhuma tela ou provider lê da API diretamente. Sempre via repository, e o repository sempre lê do Drift. A camada de sync fala HTTP para fluxos offline-first; `AttendanceRepository` também fala HTTP para confirmação/cancelamento de presença, que é online obrigatório.
 
 ### State management
 **Riverpod** (v2+). Justificativa:
