@@ -62,7 +62,7 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 - Quando alguém com `status: confirmed` cancela, o primeiro da lista de espera é **promovido** para `confirmed` (e recebe push)
 - Cancelar uma confirmação muda `status` para `declined` e libera vaga
 - Admin pode adicionar presença avulsa sem cadastro; ela conta como confirmado/lista de espera no racha semanal, mas não cria jogador em `users`
-- Cadastro de jogador novo: admin clica em "Convidar" → server gera token → admin compartilha link → ao abrir, jogador completa nome e informa se é goleiro → entra como `role: player`, `player_type: casual`, `goalkeeper: false` por default
+- Cadastro de jogador novo: admin clica em "Convidar" → server gera token → admin compartilha link → ao abrir, jogador completa nome, escolhe `player_type` (`casual` pré-selecionado por padrão) e informa se é goleiro → entra como `role: player`, `goalkeeper: false` por default
 
 ### Endpoints
 

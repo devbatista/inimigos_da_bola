@@ -20,7 +20,7 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 ## Sprint 1 — Auth + Jogadores (offline-ready)
 
 - Backend: `users` (com `role`, `player_type`, `skill_score`, `goalkeeper`), `skill_ratings`, endpoints de auth (sign_in, refresh, sign_out), convite (`invitations` + `accept_invitation`)
-- Mobile: telas de login, convite (aceitar via deep link), perfil próprio
+- Mobile: telas de login, convite (aceitar via deep link com seleção de `player_type`, `casual` pré-selecionado), perfil próprio
 - Drift configurado com tabela `users` espelhada
 - Repository `UserRepository` lê de Drift; primeiro `Stream<List<User>>` no app
 - Sync engine **v0**: apenas push (mutações → server), sem pull ainda. Pull manual a cada login.

@@ -12,12 +12,13 @@
 ### Convite (admin convida jogador)
 
 1. Admin clica "Convidar jogador" → preenche email e nome
-2. Server cria `User` com `role: player`, `player_type: casual`, sem senha, status `invited`, gera token de convite (JWT curto, 7 dias)
+2. Server cria `User` com `role: player`, `player_type: casual`, sem senha, status `invited`, gera token de convite (JWT curto, 7 dias). `casual` é apenas o valor inicial padrão.
 3. Server retorna link `https://app.inimigosdabola.com/invite?token=<jwt>`
 4. Admin compartilha o link manualmente (WhatsApp, etc.) — no MVP não enviamos email
 5. Jogador abre o link no app → tela "Aceitar convite":
    - Pré-preenche nome (editável)
    - Pede senha + confirmação
+   - Pede `player_type` com `casual` pré-selecionado; jogador pode trocar para `monthly`
    - Pede para informar se é goleiro
 6. App envia para `POST /api/v1/users/accept_invitation`
 7. Server valida token, define senha (bcrypt), ativa o user, emite access + refresh JWT

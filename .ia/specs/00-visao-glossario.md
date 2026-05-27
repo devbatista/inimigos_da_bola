@@ -28,7 +28,7 @@ O usuário-alvo do MVP é **a turma do organizador** — não é um SaaS multi-g
 ## Escopo do MVP
 
 ### Dentro
-- Cadastro de jogadores com marcação de goleiro (`goalkeeper: true/false`) e **label "mensalista" ou "avulso"** (organização apenas; sem fluxo de pagamento associado no MVP)
+- Cadastro de jogadores com marcação de goleiro (`goalkeeper: true/false`) e **label "mensalista" ou "avulso"** escolhida pelo próprio player no cadastro, com "avulso" (`casual`) pré-selecionado por padrão
 - Avaliação de habilidade: todos os players avaliam os demais com nota de 0 a 100; o sistema calcula a média e cada usuário vê apenas o próprio `skill_score` na tela principal
 - Confirmação de presença para o racha da semana corrente, com quantidade e lista de confirmados visíveis para todos os usuários logados
 - Presença avulsa adicionada pelo admin para jogador sem cadastro; conta no racha semanal, mas não cria `User`
