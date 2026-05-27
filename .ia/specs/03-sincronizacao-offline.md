@@ -4,7 +4,9 @@
 
 A UI lê do **DB local** (Drift) via streams reativas. A maior parte das escritas é aplicada localmente primeiro (otimista) e enfileirada em `sync_queue`. Um **sync engine** roda em background drenando a fila para o Rails e puxando atualizações do server. Em quadras com 4G ruim ou sem rede, o app continua usável para leitura, sorteio, cronômetro, placar e lançamento de stats; ao reconectar, tudo que é offline-first se reconcilia.
 
-**Exceção importante**: confirmação/cancelamento de presença não é offline-first. O app precisa enviar imediatamente ao backend para garantir lista de espera, limite de vagas e promoção correta. Sem rede, o botão deve informar que a ação precisa de conexão e não deve gravar uma presença pendente local.
+**Exceção importante**: confirmação/cancelamento de presença do próprio player não é offline-first. O app precisa enviar imediatamente ao backend para garantir lista de espera, limite de vagas e promoção correta. Sem rede, o botão deve informar que a ação precisa de conexão e não deve gravar uma presença pendente local.
+
+**Presença avulsa do admin** também exige rede, mas não faz parte do fluxo obrigatório de presença do player. Ela acontece em tela separada de admin, por endpoint próprio.
 
 ## Modelo de sync
 
@@ -14,7 +16,7 @@ A UI lê do **DB local** (Drift) via streams reativas. A maior parte das escrita
 - "LWW" porque, em conflito, o registro com `updated_at` mais recente vence
 - Justificativa: baixa concorrência (1 admin, ~20 jogadores), single-tenant, sem necessidade de merge fino. CRDTs são overkill no MVP.
 
-## Fluxo online obrigatório: presença
+## Fluxo online obrigatório: presença do próprio player
 
 ```
 [UI "Vou!" / "Não vou"]
@@ -28,14 +30,34 @@ A UI lê do **DB local** (Drift) via streams reativas. A maior parte das escrita
 ```
 
 Regras:
-- Não inserir confirmação/cancelamento de presença em `sync_queue`.
+- Não inserir confirmação/cancelamento de presença do próprio player em `sync_queue`.
 - Não fazer update otimista de `attendances`; o server decide confirmação, lista de espera e promoção.
 - Após sucesso, o backend pode disparar push silencioso para outros devices puxarem atualização.
 - Em falha de rede, manter o estado anterior visível no cache e orientar o usuário a tentar novamente.
 
+## Fluxo online separado: presença avulsa do admin
+
+```
+[Tela admin "Confirmações avulsas"]
+  │
+  ▼
+[GuestAttendanceRepository]
+  ├─ verifica conectividade/token e permissão de admin
+  ├─ adiciona avulso: POST /api/v1/weekly_sessions/:id/guest_attendances
+  ├─ remove avulso: DELETE /api/v1/weekly_sessions/:id/guest_attendances/:attendance_id
+  ├─ em sucesso: grava resposta no Drift e atualiza contador/listas locais
+  └─ sem rede/erro: não altera presença local; mostra mensagem de ação não concluída
+```
+
+Regras:
+- Não inserir presença avulsa em `sync_queue`.
+- Não reutilizar o botão "Vou!" / "Não vou" para avulsos.
+- Presença avulsa só é criada/removida pela tela separada de admin.
+- O server decide se a presença avulsa entra como confirmada ou lista de espera.
+
 ## Fluxo de push offline-first (mutações locais → server)
 
-Esse fluxo **não** se aplica a `attendances`. Presença usa chamada online imediata (`POST /api/v1/weekly_sessions/:id/attendances`) e atualiza o Drift somente após resposta do backend.
+Esse fluxo **não** se aplica a `attendances`. Presença do próprio player e presença avulsa do admin usam chamadas online imediatas e atualizam o Drift somente após resposta do backend.
 
 ```
 [UI ação]
@@ -166,6 +188,6 @@ Resposta: como descrito acima.
 - **Repository por feature** é o único caminho de leitura/escrita
 - Repository expõe `Stream<T>` para reads (vem direto do Drift)
 - Repository expõe `Future<void>` para writes; internamente: escreve no Drift + insere em `sync_queue` em uma transação atômica
-- Exceção: `AttendanceRepository` para confirmar/cancelar presença chama o backend imediatamente e só persiste no Drift após resposta
+- Exceção: `AttendanceRepository` para confirmar/cancelar presença do próprio player e `GuestAttendanceRepository` para presença avulsa do admin chamam o backend imediatamente e só persistem no Drift após resposta
 - Sync engine roda como **isolate de fundo** (`flutter_isolate` ou similar) para não travar a UI
 - Erros de sync não viram exceptions para a UI — viram entries de log/telemetria

@@ -42,6 +42,7 @@ App mobile (Flutter) para gerir o "futebol de segunda" da turma: confirmação d
 - **Partida curta** — jogo dentro do racha, normalmente de 8 minutos ou até 2 gols; não é persistido no MVP
 - **Mensalista** — jogador rotulado como fixo (`player_type: montly`). No MVP é só uma label organizacional; não há cobrança associada.
 - **Avulso** — jogador rotulado como eventual (`player_type: casual`). Também só uma label no MVP.
+- **Presença avulsa** — confirmação criada pelo admin para alguém sem cadastro; conta no racha, mas não cria player.
 - **Presença** — status do jogador para um racha: `confirmed` | `declined` | `pending`
 - **Lista de espera** — confirmações além do `max_players` do racha
 - **Ferramentas de quadra** — sorteio, cronômetro e placar. Disponíveis para qualquer usuário, vivem em memória (Riverpod), **não persistem**. O sorteio vale apenas uma vez/rodada.

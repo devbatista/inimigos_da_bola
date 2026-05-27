@@ -48,9 +48,10 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 ## Sprint 3 — Sessão semanal + Confirmação de Presença
 
 - Backend: `weekly_sessions`, `attendances`, job `WeeklySessions::CreateCurrentJob` (cron Sidekiq no dia configurado às 8h)
-- Endpoints: `GET /api/v1/weekly_sessions/current`, `POST /api/v1/weekly_sessions/:id/attendances`
+- Endpoints: `GET /api/v1/weekly_sessions/current`, `POST /api/v1/weekly_sessions/:id/attendances`, `POST /api/v1/weekly_sessions/:id/guest_attendances`
 - Pundit policies (`WeeklySessionPolicy`, `AttendancePolicy`)
 - Mobile: home com card do racha da semana, botão "Vou!"/"Não vou", contador público de confirmados, listas (confirmados/lista de espera/não vão/pendentes)
+- Mobile admin: tela separada para adicionar/remover presença avulsa sem cadastro, atualizando o contador de confirmados
 - Lógica de waitlist (promoção do primeiro da fila quando alguém cancela) — implementada server-side, refletida via sync
 - Componente `AttendanceChip` e `PlayerTile` em `lib/core/widgets/`
 
@@ -65,7 +66,7 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 - Mobile: tela "Ferramentas da quadra" como hub (3 acessos: Sorteio, Modo Jogo, voltar)
 - **Sorteio**:
   - Algoritmo snake draft em `lib/features/teams/domain/draw_algorithm.dart` (função pura, testável)
-  - Tela com seleção de participantes (default: confirmados do racha atual), configuração de número de times, botão sortear, refazer, troca manual drag-and-drop, edição inline dos nomes
+  - Tela com participantes carregados automaticamente a partir dos confirmados do racha atual, adição local de avulso temporário não persistido, configuração de número de times, botão sortear, refazer, troca manual drag-and-drop, edição inline dos nomes
   - Sem endpoint, sem Drift; sorteio vale apenas uma vez/rodada e não é salvo
 - **Modo Jogo** (cronômetro + placar fullscreen):
   - Placar grande (`Time A` / `Time B`, editáveis), botões `+`/`−`

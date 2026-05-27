@@ -31,6 +31,7 @@ O usuário-alvo do MVP é **a turma do organizador** — não é um SaaS multi-g
 - Cadastro de jogadores com marcação de goleiro (`goalkeeper: true/false`) e **label "mensalista" ou "avulso"** (organização apenas; sem fluxo de pagamento associado no MVP)
 - Avaliação de habilidade: todos os players avaliam os demais com nota de 0 a 100; o sistema calcula a média e cada usuário vê apenas o próprio `skill_score` na tela principal
 - Confirmação de presença para o racha da semana corrente, com quantidade e lista de confirmados visíveis para todos os usuários logados
+- Presença avulsa adicionada pelo admin para jogador sem cadastro; conta no racha semanal, mas não cria `User`
 - Lista de espera quando passa do limite de vagas
 - **Sorteio de times** (snake draft por média interna de habilidade) — ferramenta **temporária na quadra**, resultado fica em memória no dispositivo do admin, **não persiste em banco**
 - **Cronômetro + placar** durante as partidas curtas — também ferramentas temporárias em memória, **não persistem em banco**
@@ -56,6 +57,7 @@ O usuário-alvo do MVP é **a turma do organizador** — não é um SaaS multi-g
 | **Partida curta** | Jogo de quadra dentro do racha, com duração de 8 minutos ou até 2 gols. Não tem tabela própria, não é sincronizada e não é persistida no MVP. |
 | **Mensalista** | Jogador com `player_type = monthly`. No MVP é só uma label organizacional (sem cobrança); quando pagamento voltar, será o jogador com assinatura ativa. |
 | **Avulso** | Jogador com `player_type = casual`. No MVP é só uma label; quando pagamento voltar, será quem paga por partida. |
+| **Presença avulsa** | Confirmação criada pelo admin para alguém sem cadastro que vai jogar naquele racha. Conta no total de confirmados/lista de espera, mas não cria usuário nem perfil. |
 | **Média de habilidade** | Nota de 0 a 100 calculada a partir das avaliações que os players fazem dos demais. Cada usuário vê apenas o próprio `skill_score`; notas individuais e médias de outros players não são exibidas. |
 | **Presença** | Estado do jogador para um racha: `confirmed`, `declined`, `pending`. |
 | **Lista de espera** | Confirmações além de `max_players`; primeiras na fila quando alguém cancela. |

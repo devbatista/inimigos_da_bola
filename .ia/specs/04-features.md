@@ -13,11 +13,11 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 **Home (tela principal do app)**
 - Card destacado "Racha de segunda — DD/MM" no topo
   - Botão grande "Vou!" / "Não vou" (toggle do próprio jogador)
-  - Contador público `X de Y confirmados` (X = confirmados, Y = `max_players`), visível para todos os usuários logados
+  - Contador público `X de Y confirmados` (X = confirmados cadastrados + presenças avulsas confirmadas, Y = `max_players`), visível para todos os usuários logados
   - Meu skill: valor do `skill_score` do usuário logado (0–100)
   - Local e horário vindos da configuração fixa do backend
 - Listas separadas:
-  - **Confirmados** (avatar + nome + marcador de goleiro quando aplicável + label mensalista/avulso)
+  - **Confirmados** (avatar + nome + marcador de goleiro quando aplicável + label mensalista/avulso; presenças avulsas aparecem com marcador "Avulso")
   - **Lista de espera** (numerada, "1º na fila", "2º na fila", ...)
   - **Não vão** (recolhível)
   - **Pendentes** (recolhível, jogadores convidados que ainda não decidiram)
@@ -28,6 +28,13 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 - Filtros por label e por goleiro
 - Ações: editar, mudar label, soft-delete
 - Botão "Convidar novo jogador" → gera link mágico (ver [05-autenticacao.md](05-autenticacao.md))
+
+**Confirmações avulsas (admin)**
+- Tela separada para o admin adicionar presença de um avulso sem cadastro
+- Botão "Adicionar avulso" abre input de nome e envia pelo endpoint próprio de presença avulsa
+- A presença avulsa não cria `User`, não gera convite e não é persistida como jogador cadastrado
+- A presença avulsa atualiza o contador público de confirmados do racha semanal
+- O admin pode remover/cancelar uma presença avulsa; isso libera vaga e pode promover alguém da lista de espera
 
 **Perfil do jogador**
 - Próprio perfil ou de outro jogador (visualização)
@@ -54,6 +61,7 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 - Quando os confirmados atingem `max_players`, novas confirmações entram em **lista de espera** (`waitlist_position` 1, 2, 3, ...)
 - Quando alguém com `status: confirmed` cancela, o primeiro da lista de espera é **promovido** para `confirmed` (e recebe push)
 - Cancelar uma confirmação muda `status` para `declined` e libera vaga
+- Admin pode adicionar presença avulsa sem cadastro; ela conta como confirmado/lista de espera no racha semanal, mas não cria jogador em `users`
 - Cadastro de jogador novo: admin clica em "Convidar" → server gera token → admin compartilha link → ao abrir, jogador completa nome e informa se é goleiro → entra como `role: player`, `player_type: casual`, `goalkeeper: false` por default
 
 ### Endpoints
@@ -61,7 +69,9 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 - `GET /api/v1/club` — config fixa do racha (local, horário, dia recorrente, max_players)
 - `GET /api/v1/weekly_sessions/current` — sessão semanal do racha corrente (cria se não existir)
 - `GET /api/v1/weekly_sessions/:id` — detalhes
-- `POST /api/v1/weekly_sessions/:id/attendances` — confirmar/recusar (body: `{ status: confirmed|declined }`)
+- `POST /api/v1/weekly_sessions/:id/attendances` — confirmar/recusar player cadastrado (body: `{ status: confirmed|declined }`)
+- `POST /api/v1/weekly_sessions/:id/guest_attendances` — admin adiciona presença avulsa sem cadastro (body: `{ guest_name: "..." }`)
+- `DELETE /api/v1/weekly_sessions/:id/guest_attendances/:attendance_id` — admin remove/cancela presença avulsa
 - `GET /api/v1/weekly_sessions/:id/attendances` — lista (também vem via pull de sync)
 - `POST /api/v1/skill_ratings` — cria/atualiza a nota que o player logado deu a outro player
 - `POST /api/v1/users/invitations` — admin gera convite
@@ -69,7 +79,8 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 
 ### Comportamento offline
 
-- Confirmar/cancelar presença → chamada online imediata ao backend; se não houver rede, a ação não é concluída e a UI mantém o estado em cache
+- Confirmar/cancelar presença do próprio player → chamada online imediata ao backend; se não houver rede, a ação não é concluída e a UI mantém o estado em cache
+- Adicionar/remover presença avulsa pelo admin → chamada online imediata ao backend; sem rede, a ação não é concluída
 - Lista de confirmados → renderizada do cache local com selo "Última atualização"
 - Quantidade de confirmados → visível para todos, lida do cache local e atualizada por sync/push silencioso
 - Cadastrar novo jogador (admin) → UUID v7 gerado local; sincroniza depois
@@ -86,7 +97,9 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 
 **Sorteio**
 - Disponível na seção "Ferramentas da quadra" (mesmo lugar do cronômetro e placar)
-- Permite escolher manualmente quem entra no sorteio (default: os confirmados do racha atual; pode adicionar/remover)
+- Ao abrir, carrega automaticamente os confirmados do racha atual como participantes do sorteio, incluindo presenças avulsas adicionadas pelo admin
+- Além das presenças avulsas já confirmadas pelo admin, permite adicionar localmente um jogador avulso temporário que não está confirmado/cadastrado; esse jogador existe apenas no estado da tela e não é persistido
+- Permite remover participantes apenas da lista local do sorteio, sem alterar presença no racha
 - Configurável: número de times (default 2), tamanho do time
 - Botão "Sortear" → roda o algoritmo, mostra o resultado em cards lado a lado
 - Cada card: nome do time (default `Time A`, `Time B`; editável in-place) + lista de jogadores com marcador de goleiro quando aplicável
@@ -96,11 +109,13 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 ### Algoritmo de sorteio
 
 **Snake draft por média interna de habilidade**, totalmente client-side:
-1. Pega a lista de participantes (default: confirmados; admin/player pode editar manualmente antes do sorteio)
-2. Ordena por `skill_score` desc, com desempate aleatório dentro de faixas próximas
-3. Distribui em N times em padrão "serpente": A, B, B, A, A, B, B, A, ...
-4. Ajuste opcional: tenta colocar 1 goleiro por time se houver jogadores com `goalkeeper: true`
-5. Seed pseudoaleatória exposta para reproduzibilidade durante a sessão (não persiste)
+1. Pega automaticamente a lista de confirmados do racha atual
+2. Aplica inclusões/remoções locais feitas na tela, incluindo avulsos temporários
+3. Para cada presença avulsa sem cadastro e cada avulso temporário, atribui `skill_score` mediano calculado a partir dos `skill_score` dos confirmados cadastrados atuais; se não houver confirmados cadastrados, usa `50`
+4. Ordena por `skill_score` desc, com desempate aleatório dentro de faixas próximas
+5. Distribui em N times em padrão "serpente": A, B, B, A, A, B, B, A, ...
+6. Ajuste opcional: tenta colocar 1 goleiro por time se houver jogadores com `goalkeeper: true`
+7. Seed pseudoaleatória exposta para reproduzibilidade durante a sessão (não persiste)
 
 `skill_score` é usado apenas internamente pelo algoritmo; a tela de sorteio não mostra notas nem médias.
 
@@ -109,6 +124,7 @@ Arquivo: `lib/features/teams/domain/draw_algorithm.dart` (função pura, testáv
 ### Estado
 
 - `TeamsDrawState` em Riverpod (`AutoDispose` — descarta quando a tela some)
+- Jogadores avulsos adicionados localmente vivem apenas em `TeamsDrawState`
 - Não há endpoint, não há tabela no Drift, não há sync
 
 ### Comportamento offline
@@ -163,7 +179,7 @@ Arquivo: `lib/features/teams/domain/draw_algorithm.dart` (função pura, testáv
 ### Telas
 
 **Lançamento de stats (admin, pós-racha)**
-- Lista os jogadores que estavam confirmados na sessão semanal
+- Lista os jogadores cadastrados que estavam confirmados na sessão semanal
 - Para cada um: inputs para `goals` e `assists`
 - Botão "Salvar stats do racha" → grava `session_stats` agregados por jogador
 

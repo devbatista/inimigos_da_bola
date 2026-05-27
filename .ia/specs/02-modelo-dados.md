@@ -76,13 +76,26 @@ Regras:
 | Coluna | Tipo | Notas |
 |---|---|---|
 | `id` | uuid | PK |
-| `user_id` | uuid | FK users |
+| `user_id` | uuid | FK users; `NULL` quando for presença avulsa sem cadastro |
 | `weekly_session_id` | uuid | FK weekly_sessions |
+| `kind` | enum (`registered`, `guest`) | `registered` para player cadastrado; `guest` para avulso sem cadastro adicionado pelo admin |
+| `guest_name` | string | nome exibido da presença avulsa; obrigatório quando `kind = guest`, `NULL` quando `kind = registered` |
+| `created_by_admin_id` | uuid | FK users; admin que adicionou a presença avulsa, `NULL` para presença do próprio player cadastrado |
 | `status` | enum (`confirmed`, `declined`, `pending`) | not null, default `pending` |
 | `waitlist_position` | integer | `NULL` se confirmado dentro do limite; > 0 = ordem na espera |
 | `created_at`, `updated_at`, `deleted_at`, `version` | — | colunas de sync |
 
-Índices: `(user_id, weekly_session_id)` unique parcial onde `deleted_at IS NULL`; `weekly_session_id`.
+Índices:
+- `(user_id, weekly_session_id)` unique parcial onde `deleted_at IS NULL AND kind = 'registered'`
+- `(weekly_session_id, guest_name)` para busca de presenças avulsas
+- `weekly_session_id`
+
+Regras:
+- Presença de player cadastrado usa `kind = registered`, `user_id` obrigatório e `guest_name = NULL`.
+- Presença avulsa usa `kind = guest`, `user_id = NULL`, `guest_name` obrigatório e só pode ser criada/removida por admin.
+- Presenças avulsas contam no total de confirmados e entram na lista de espera quando excedem `max_players`.
+- Presença avulsa não cria registro em `users`, não participa de avaliação de habilidade e não aparece em ranking/perfil.
+- Para sorteio, uma presença avulsa confirmada recebe `skill_score` mediano calculado a partir dos confirmados cadastrados da sessão.
 
 ### `session_stats`
 
