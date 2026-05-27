@@ -5,6 +5,7 @@
 - **`devise`** + **`devise-jwt`** no Rails para emissão/revogação de JWT
 - **`pundit`** para autorização (policies por recurso)
 - **`flutter_secure_storage`** no client para guardar access + refresh token criptografados (Keychain no iOS, Keystore no Android)
+- **`local_auth`** no client para desbloqueio por biometria após o primeiro login
 - **`bcrypt`** para hash de senha
 
 ## Fluxos
@@ -25,10 +26,24 @@
 
 ### Login
 
-1. App: tela com email + senha
+1. Primeiro acesso no app: tela com email + senha
 2. `POST /api/v1/auth/sign_in` → resposta com `access_token` (curto, 15 min) e `refresh_token` (longo, 30 dias)
 3. App salva ambos em `flutter_secure_storage`
-4. Mantém usuário logado entre cold starts (lê do storage)
+4. App habilita o desbloqueio local por biometria quando disponível no device
+5. Mantém usuário logado entre cold starts (lê do storage)
+
+### Aberturas seguintes
+
+1. App detecta sessão salva em `flutter_secure_storage`
+2. Exibe tela de bloqueio local
+3. Usuário desbloqueia com biometria (`local_auth`) ou com senha como fallback
+4. Após desbloqueio local, app abre usando tokens salvos; se necessário, faz refresh quando houver rede
+
+Regras:
+- Senha é obrigatória no primeiro acesso/login manual.
+- Biometria não autentica no backend; ela apenas desbloqueia localmente uma sessão já autenticada.
+- Se biometria falhar, estiver indisponível ou o usuário preferir, a senha pode ser usada.
+- Se não houver sessão salva ou refresh token válido, volta para login com email + senha.
 
 ### Refresh
 
@@ -86,7 +101,7 @@ Controllers chamam `authorize @weekly_session` no início das ações. Em falha,
 
 - JWT (access + refresh) em `flutter_secure_storage`
 - Ao abrir o app sem rede:
-  - Lê tokens do storage
+  - Lê tokens do storage após desbloqueio local por biometria ou senha
   - Decodifica access token localmente; se `exp` não passou, considera válido para abrir UI
   - Se passou, ainda abre UI (modo offline) mas marca o estado como "precisa refresh ao reconectar"
 - Refresh só acontece quando há rede
@@ -118,4 +133,5 @@ Controllers chamam `authorize @weekly_session` no início das ações. Em falha,
 - JWT com `iss`, `aud`, `exp`, `jti` para denylist
 - Refresh token rotacionado a cada refresh bem-sucedido
 - HTTPS obrigatório em produção
+- Biometria é apenas fator de desbloqueio local; permissões continuam validadas por JWT + Pundit no backend
 - `flutter_secure_storage` com `IOSOptions(accessibility: first_unlock_this_device)` (não migra em backups) e `AndroidOptions(encryptedSharedPreferences: true)`
