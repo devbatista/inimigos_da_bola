@@ -5,6 +5,7 @@ import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/player_tile.dart';
 import '../../../../core/widgets/skill_score_badge.dart';
+import '../../../../l10n/generated/app_localizations.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -12,18 +13,24 @@ class HomeScreen extends StatelessWidget {
   static const _confirmedPlayers = [
     _PlayerViewModel(
       name: 'João Batista',
-      label: 'Mensalista',
+      playerType: _PlayerType.monthly,
       goalkeeper: true,
     ),
-    _PlayerViewModel(name: 'Rafael Lima', label: 'Avulso'),
-    _PlayerViewModel(name: 'Carlos Souza', label: 'Mensalista'),
-    _PlayerViewModel(name: 'Marcos Alves', label: 'Avulso', guest: true),
+    _PlayerViewModel(name: 'Rafael Lima', playerType: _PlayerType.casual),
+    _PlayerViewModel(name: 'Carlos Souza', playerType: _PlayerType.monthly),
+    _PlayerViewModel(
+      name: 'Marcos Alves',
+      playerType: _PlayerType.casual,
+      guest: true,
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Inimigos da Bola')),
+      appBar: AppBar(title: Text(l10n.appTitle)),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(
@@ -35,7 +42,10 @@ class HomeScreen extends StatelessWidget {
           children: [
             const _WeeklySessionCard(),
             const SizedBox(height: AppSpacing.lg),
-            Text('Confirmados', style: Theme.of(context).textTheme.titleLarge),
+            Text(
+              l10n.confirmedSectionTitle,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             const SizedBox(height: AppSpacing.sm),
             AppCard(
               child: Column(
@@ -43,7 +53,7 @@ class HomeScreen extends StatelessWidget {
                   for (final player in _confirmedPlayers) ...[
                     PlayerTile(
                       name: player.name,
-                      label: player.label,
+                      label: player.label(l10n),
                       goalkeeper: player.goalkeeper,
                       guest: player.guest,
                     ),
@@ -54,11 +64,11 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
-            const _CollapsedSection(title: 'Lista de espera', count: 2),
+            _CollapsedSection(title: l10n.waitlistSectionTitle, count: 2),
             const SizedBox(height: AppSpacing.sm),
-            const _CollapsedSection(title: 'Não vão', count: 3),
+            _CollapsedSection(title: l10n.declinedSectionTitle, count: 3),
             const SizedBox(height: AppSpacing.sm),
-            const _CollapsedSection(title: 'Pendentes', count: 5),
+            _CollapsedSection(title: l10n.pendingSectionTitle, count: 5),
           ],
         ),
       ),
@@ -71,22 +81,27 @@ class _WeeklySessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Racha de segunda — 03/06',
+            l10n.weeklySessionTitle,
             style: Theme.of(context).textTheme.displayLarge,
           ),
           const SizedBox(height: AppSpacing.md),
-          Text('Arena X · 20:00', style: Theme.of(context).textTheme.bodyLarge),
+          Text(
+            l10n.weeklySessionPlaceTime,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
           const SizedBox(height: AppSpacing.lg),
-          Wrap(
+          const Wrap(
             spacing: AppSpacing.sm,
             runSpacing: AppSpacing.sm,
             crossAxisAlignment: WrapCrossAlignment.center,
-            children: const [
+            children: [
               _ConfirmedCounter(confirmed: 12, maxPlayers: 20),
               SkillScoreBadge(score: 74),
             ],
@@ -95,17 +110,23 @@ class _WeeklySessionCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: AppButton.primary(label: 'Vou!', onPressed: () {}),
+                child: AppButton.primary(
+                  label: l10n.goingButtonLabel,
+                  onPressed: () {},
+                ),
               ),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
-                child: AppButton.secondary(label: 'Não vou', onPressed: () {}),
+                child: AppButton.secondary(
+                  label: l10n.notGoingButtonLabel,
+                  onPressed: () {},
+                ),
               ),
             ],
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'Última atualização: 18:42',
+            l10n.lastUpdatedLabel,
             style: Theme.of(context).textTheme.labelSmall,
           ),
         ],
@@ -122,8 +143,10 @@ class _ConfirmedCounter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Text(
-      '$confirmed de $maxPlayers confirmados',
+      l10n.confirmedCounter(confirmed, maxPlayers),
       style: Theme.of(context).textTheme.titleMedium,
     );
   }
@@ -157,13 +180,22 @@ class _CollapsedSection extends StatelessWidget {
 class _PlayerViewModel {
   const _PlayerViewModel({
     required this.name,
-    required this.label,
+    required this.playerType,
     this.goalkeeper = false,
     this.guest = false,
   });
 
   final String name;
-  final String label;
+  final _PlayerType playerType;
   final bool goalkeeper;
   final bool guest;
+
+  String label(AppLocalizations l10n) {
+    return switch (playerType) {
+      _PlayerType.monthly => l10n.monthlyPlayerLabel,
+      _PlayerType.casual => l10n.casualPlayerLabel,
+    };
+  }
 }
+
+enum _PlayerType { monthly, casual }

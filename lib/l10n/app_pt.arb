@@ -1,0 +1,26 @@
+{
+  "@@locale": "pt",
+  "appTitle": "Inimigos da Bola",
+  "weeklySessionTitle": "Racha de segunda — 03/06",
+  "weeklySessionPlaceTime": "Arena X · 20:00",
+  "confirmedSectionTitle": "Confirmados",
+  "waitlistSectionTitle": "Lista de espera",
+  "declinedSectionTitle": "Não vão",
+  "pendingSectionTitle": "Pendentes",
+  "goingButtonLabel": "Vou!",
+  "notGoingButtonLabel": "Não vou",
+  "lastUpdatedLabel": "Última atualização: 18:42",
+  "confirmedCounter": "{confirmed} de {maxPlayers} confirmados",
+  "@confirmedCounter": {
+    "placeholders": {
+      "confirmed": {
+        "type": "int"
+      },
+      "maxPlayers": {
+        "type": "int"
+      }
+    }
+  },
+  "monthlyPlayerLabel": "Mensalista",
+  "casualPlayerLabel": "Avulso"
+}
