@@ -20,6 +20,7 @@ App mobile (Flutter) para gerir o "futebol de segunda" da turma: confirmação d
 4. **UUID v7** como PK de toda entidade sincronizável.
 5. **Sem cores literais** nos widgets — sempre via tokens do design system ([06-design-ui.md](.ia/specs/06-design-ui.md)).
 6. **Jamais esquecer acentuação** — textos em português devem usar acentuação correta.
+7. **Tipos e permissões simples** — `player_type` aceita apenas `montly` ou `casual`; admin não é um tipo separado, é um player com `admin: true`.
 
 ## Índice de specs (`.ia/specs/`)
 
@@ -38,12 +39,13 @@ App mobile (Flutter) para gerir o "futebol de segunda" da turma: confirmação d
 ## Glossário rápido
 
 - **Racha** — a partida de segunda-feira (sinônimo de "match")
-- **Mensalista** — jogador rotulado como fixo (`player_type: monthly`). No MVP é só uma label organizacional; não há cobrança associada.
+- **Mensalista** — jogador rotulado como fixo (`player_type: montly`). No MVP é só uma label organizacional; não há cobrança associada.
 - **Avulso** — jogador rotulado como eventual (`player_type: casual`). Também só uma label no MVP.
 - **Presença** — status do jogador para um racha: `confirmed` | `declined` | `pending`
 - **Lista de espera** — confirmações além do `max_players` do racha
 - **Ferramentas de quadra** — sorteio, cronômetro e placar. Disponíveis para qualquer usuário, vivem em memória (Riverpod), **não persistem**.
-- **Admin** — organizador do racha (pode tudo); **Player** — jogador comum
+- **Admin** — player com `admin: true` (organizador do racha, pode tudo)
+- **Player** — player com `admin: false`
 
 ## Comandos do projeto
 
