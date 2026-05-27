@@ -95,14 +95,14 @@ app/
 │   └── notifications/push_job.rb
 ├── policies/                          # Pundit (autorização por recurso)
 └── config/
-    └── club.yml                       # local fixo, horário do racha, dia da semana
+    └── initializers/club_config.rb     # lê MATCH_WEEKDAY, MATCH_TIME, MATCH_LOCATION
 ```
 
 **Regras**:
 - Controllers magros: parsing/serialização e chamada do service correspondente
 - Services: ponto único da regra de negócio; retornam resultado tipado (`Success` / `Failure`)
 - Models: validações estruturais (presença, formato), escopos, callbacks **somente** para `updated_at`
-- **Config do clube** (`config/club.yml`) é a fonte única de verdade para local da quadra, dia da semana e horário do racha. Não há entidade no banco para isso; é hardcoded no deploy. Endpoint `GET /api/v1/club` expõe esses valores para o app sincronizar e exibir.
+- **Config do racha fixo** vem de variáveis de ambiente do backend: `MATCH_WEEKDAY`, `MATCH_TIME`, `MATCH_LOCATION` e, se necessário, `MATCH_MAX_PLAYERS`. Não há entidade no banco nem tela para editar esses valores no MVP; são configuração do deploy. Endpoint `GET /api/v1/club` expõe esses valores para o app sincronizar e exibir.
 
 ## API
 

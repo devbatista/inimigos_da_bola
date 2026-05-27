@@ -11,7 +11,7 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 - CI básico (GitHub Actions): lint + test em PR; deploy automático em `main` → staging
 - Deploy "hello world" do Rails em Railway/Render
 - App em iOS Simulator + Android Emulator com tela mostrando "Inimigos da Bola" estilizada (paleta do [06-design-ui.md](06-design-ui.md))
-- `config/club.yml` com local, dia da semana e horário; endpoint `GET /api/v1/club`
+- Variáveis de ambiente `MATCH_WEEKDAY`, `MATCH_TIME`, `MATCH_LOCATION` para data/dia recorrente, horário e local fixos; endpoint `GET /api/v1/club`
 
 **Entrega**: dev pode rodar tudo localmente; staging up.
 
@@ -19,12 +19,13 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 
 ## Sprint 1 — Auth + Jogadores (offline-ready)
 
-- Backend: `users` (com `role`, `player_type`, `skill_level`, `preferred_position`), endpoints de auth (sign_in, refresh, sign_out), convite (`invitations` + `accept_invitation`)
+- Backend: `users` (com `role`, `player_type`, `skill_score`, `preferred_position`), `skill_ratings`, endpoints de auth (sign_in, refresh, sign_out), convite (`invitations` + `accept_invitation`)
 - Mobile: telas de login, convite (aceitar via deep link), perfil próprio
 - Drift configurado com tabela `users` espelhada
 - Repository `UserRepository` lê de Drift; primeiro `Stream<List<User>>` no app
 - Sync engine **v0**: apenas push (mutações → server), sem pull ainda. Pull manual a cada login.
 - Tela "Lista de jogadores" (admin) mostrando o que veio do server
+- Fluxo de avaliação: players dão notas de 0 a 100 para os demais; notas e médias não aparecem na UI
 
 **Entrega**: admin cadastra e convida jogadores; jogadores aceitam convite e fazem login. Tudo persiste local.
 

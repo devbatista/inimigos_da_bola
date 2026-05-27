@@ -14,7 +14,7 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 - Card destacado "Racha de segunda — DD/MM" no topo
   - Botão grande "Vou!" / "Não vou" (toggle do próprio jogador)
   - Contador `X de Y confirmados` (X = confirmados, Y = `max_players`)
-  - Local (lido da config do clube) e horário
+  - Local e horário vindos da configuração fixa do backend
 - Listas separadas:
   - **Confirmados** (avatar + nome + posição + label mensalista/avulso)
   - **Lista de espera** (numerada, "1º na fila", "2º na fila", ...)
@@ -23,22 +23,30 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 - Selo "Última atualização: HH:MM" indicando idade do cache
 
 **Lista de jogadores (admin)**
-- Tabela com todos os cadastrados: nome, label (mensalista/avulso), posição, nível
+- Tabela com todos os cadastrados: nome, label (mensalista/avulso), posição
 - Filtros por label e por posição
-- Ações: editar, mudar label, mudar nível, soft-delete
+- Ações: editar, mudar label, soft-delete
 - Botão "Convidar novo jogador" → gera link mágico (ver [05-autenticacao.md](05-autenticacao.md))
 
 **Perfil do jogador**
 - Próprio perfil ou de outro jogador (visualização)
-- Dados pessoais, posição, nível
+- Dados pessoais e posição
 - Histórico: presenças no mês, gols na temporada, ranking de artilharia
+
+**Avaliação de habilidade**
+- Todos os players avaliam os demais players com nota de 0 a 100
+- Não permite autoavaliação
+- Cada player pode alterar a própria avaliação enviada para outro player
+- A UI não mostra notas individuais recebidas, notas dadas por outros, nem a média de habilidade de ninguém
+- O sistema recalcula uma média interna (`skill_score`) por player para usar no balanceamento do sorteio
 
 ### Regras de domínio
 
 - O `Match` de cada segunda é criado automaticamente pelo job `Matches::CreateWeeklyJob` (cron Sidekiq) toda segunda às 8h
-  - `scheduled_at` = segunda atual com horário do clube vindo de `config/club.yml`
-  - `max_players` = valor do clube (default 14, configurável)
+  - `scheduled_at` = data da semana corrente calculada a partir de `MATCH_WEEKDAY` + horário de `MATCH_TIME`
+  - `max_players` = valor fixo do backend (default 14; opcionalmente `MATCH_MAX_PLAYERS`)
   - `status` = `scheduled`
+- Data/dia recorrente, horário e local são fixos por variáveis de ambiente (`MATCH_WEEKDAY`, `MATCH_TIME`, `MATCH_LOCATION`) e não são editáveis pela UI.
 - Jogadores confirmam até a hora do `scheduled_at`; depois disso, presença vira read-only
 - Quando os confirmados atingem `max_players`, novas confirmações entram em **lista de espera** (`waitlist_position` 1, 2, 3, ...)
 - Quando alguém com `status: confirmed` cancela, o primeiro da lista de espera é **promovido** para `confirmed` (e recebe push)
@@ -47,11 +55,12 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 
 ### Endpoints
 
-- `GET /api/v1/club` — config do clube (local, horário, dia da semana, max_players)
+- `GET /api/v1/club` — config fixa do racha (local, horário, dia recorrente, max_players)
 - `GET /api/v1/matches/current` — racha da semana corrente (cria se não existir)
 - `GET /api/v1/matches/:id` — detalhes
 - `POST /api/v1/matches/:id/attendances` — confirmar/recusar (body: `{ status: confirmed|declined }`)
 - `GET /api/v1/matches/:id/attendances` — lista (também vem via pull de sync)
+- `POST /api/v1/skill_ratings` — cria/atualiza a nota que o player logado deu a outro player
 - `POST /api/v1/users/invitations` — admin gera convite
 - `POST /api/v1/users/accept_invitation` — jogador aceita
 
@@ -82,12 +91,14 @@ Quatro blocos no MVP: **Jogadores + Presença**, **Sorteio de times** (temporár
 
 ### Algoritmo de sorteio
 
-**Snake draft por nível**, totalmente client-side:
+**Snake draft por média interna de habilidade**, totalmente client-side:
 1. Pega a lista de participantes (default: confirmados; admin/player pode editar manualmente antes do sorteio)
-2. Ordena por `skill_level` desc, com desempate aleatório dentro de cada nível
+2. Ordena por `skill_score` desc, com desempate aleatório dentro de faixas próximas
 3. Distribui em N times em padrão "serpente": A, B, B, A, A, B, B, A, ...
 4. Ajuste opcional: tenta colocar 1 goleiro por time se houver `preferred_position: goalkeeper`
 5. Seed pseudoaleatória exposta para reproduzibilidade durante a sessão (não persiste)
+
+`skill_score` é usado apenas internamente pelo algoritmo; a tela de sorteio não mostra notas nem médias.
 
 Arquivo: `lib/features/teams/domain/draw_algorithm.dart` (função pura, testável).
 

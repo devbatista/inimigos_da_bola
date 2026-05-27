@@ -11,6 +11,8 @@
 
 ```
 users ──< attendances >── matches
+  │                         │
+  ├──< skill_ratings >── users
                             │
                             └─< match_stats >── users
 ```
@@ -29,12 +31,31 @@ users ──< attendances >── matches
 | `phone` | string | opcional, E.164 |
 | `role` | enum (`admin`, `player`) | not null, default `player` |
 | `player_type` | enum (`monthly`, `casual`) | label organizacional (mensalista/avulso); sem implicação financeira no MVP; default `casual` |
-| `skill_level` | integer (1–5) | usado no sorteio; default 3 |
+| `skill_score` | decimal(5,2) | média interna de habilidade (0–100), calculada pelo sistema a partir de `skill_ratings`; não editável pela UI e não exibida aos usuários |
 | `preferred_position` | enum (`goalkeeper`, `defender`, `midfielder`, `forward`, `any`) | default `any` |
 | `encrypted_password`, etc. | (campos do Devise) | — |
 | `created_at`, `updated_at`, `deleted_at`, `version` | — | colunas de sync |
 
 Índices: `email` (unique), `(deleted_at, updated_at)` para pull.
+
+### `skill_ratings`
+
+| Coluna | Tipo | Notas |
+|---|---|---|
+| `id` | uuid | PK |
+| `evaluator_user_id` | uuid | FK users; quem deu a nota |
+| `evaluated_user_id` | uuid | FK users; quem recebeu a nota |
+| `score` | integer | nota de 0 a 100 |
+| `created_at`, `updated_at`, `deleted_at`, `version` | — | colunas de sync |
+
+Índices: `(evaluator_user_id, evaluated_user_id)` unique parcial onde `deleted_at IS NULL`; `evaluated_user_id`.
+
+Regras:
+- Um player avalia os demais players; autoavaliação não é permitida.
+- Cada par avaliador/avaliado tem uma nota ativa. Reavaliar atualiza a nota existente.
+- Notas individuais nunca são exibidas para usuários.
+- `users.skill_score` é recalculado pelo sistema como média das notas recebidas, limitado ao intervalo 0–100.
+- A média também é privada: não aparece em lista de jogadores, perfil ou ranking; é usada apenas por regras internas, como balanceamento do sorteio.
 
 ### `matches`
 
@@ -48,7 +69,7 @@ users ──< attendances >── matches
 
 Índices: `scheduled_at`, `(deleted_at, updated_at)`.
 
-> **Local e dia da semana são fixos no MVP**. O nome da quadra e o horário padrão ficam em **config do servidor** (`config/club.yml`, lidos por `Rails.application.config.club.*`) e expostos via endpoint `GET /api/v1/club` para o app consumir. Um Sidekiq cron job (`Matches::CreateWeeklyJob`) roda toda segunda de manhã criando o `Match` daquela semana se ele ainda não existir. Se um dia o local mudar para um racha específico, adicionar uma coluna `location_override` — não está no MVP.
+> **Data/dia recorrente, local e horário são fixos no MVP**. O dia recorrente, o nome da quadra e o horário padrão vêm de variáveis de ambiente do backend (`MATCH_WEEKDAY`, `MATCH_TIME`, `MATCH_LOCATION`) e são expostos via endpoint `GET /api/v1/club` para o app consumir. Não há edição desses valores pela UI. Um Sidekiq cron job (`Matches::CreateWeeklyJob`) cria o `Match` da semana corrente com base nessa configuração se ele ainda não existir. Se um dia o local mudar para um racha específico, adicionar uma coluna `location_override` — não está no MVP.
 
 ### `attendances`
 

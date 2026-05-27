@@ -61,6 +61,8 @@ Resposta:
 
 > Sorteio de times, cronômetro e placar **não sincronizam** — são estado em memória no app do admin (Riverpod), descartado ao sair da tela ou fechar o app.
 
+> Avaliações de habilidade (`skill_ratings`) têm regra de privacidade: o client pode enviar/criar/atualizar apenas as notas dadas pelo usuário logado, mas o pull não retorna avaliações individuais de outros usuários. A média interna (`users.skill_score`) é calculada pelo server e usada apenas pelo sistema, sem exibição na UI.
+
 - Sync engine itera cada entity e faz upsert no Drift por `id`
 - Registros com `deleted_at` preenchido são tombstones → DAO marca como deletado localmente (ou apaga, dependendo da policy)
 - Após processar tudo, atualiza `sync_state.last_synced_at = response.server_time`

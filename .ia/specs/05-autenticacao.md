@@ -18,7 +18,7 @@
 5. Jogador abre o link no app → tela "Aceitar convite":
    - Pré-preenche nome (editável)
    - Pede senha + confirmação
-   - Pede posição preferida e nível (admin pode ajustar depois)
+   - Pede posição preferida
 6. App envia para `POST /api/v1/users/accept_invitation`
 7. Server valida token, define senha (bcrypt), ativa o user, emite access + refresh JWT
 
@@ -53,7 +53,7 @@
 
 | Role | Pode |
 |---|---|
-| `admin` | Tudo: criar/editar matches, convidar jogadores, sortear times, lançar stats, mudar nível/label de qualquer jogador |
+| `admin` | Tudo: criar/editar matches, convidar jogadores, sortear times, lançar stats, mudar label de qualquer jogador |
 | `player` | Confirmar/cancelar a própria presença, editar próprio perfil, ver listas e ranking |
 
 - O **primeiro user criado** no banco é o `admin` (organizador da turma). Configurado via seeds.
