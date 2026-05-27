@@ -127,7 +127,7 @@ Sprints curtos focados em entregar valor incremental para a turma. Cada sprint t
 - Chat in-app (alternativa ao WhatsApp)
 - Multi-tenant (vários grupos no mesmo app)
 - Web admin
-- Dark mode
+- Override manual de tema (claro/escuro) fora da preferência do sistema operacional
 - Login social (Google/Apple)
 - CRDTs (se concorrência crescer com multi-admin)
 - **Broadcast em tempo real do placar/cronômetro** entre celulares (uma só fonte de verdade durante o jogo)

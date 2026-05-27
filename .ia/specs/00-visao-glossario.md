@@ -45,7 +45,7 @@ O usuário-alvo do MVP é **a turma do organizador** — não é um SaaS multi-g
 - Multi-tenant (vários grupos no mesmo app)
 - Chat in-app
 - Web admin (tudo é mobile)
-- Dark mode
+- Override manual de tema (claro/escuro) fora da preferência do sistema operacional
 - Login social (Google/Apple)
 - CRDTs para resolução fina de conflitos
 

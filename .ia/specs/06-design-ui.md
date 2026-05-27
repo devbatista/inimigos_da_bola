@@ -106,6 +106,21 @@ class AppTheme {
         textTheme: AppTextTheme.build(),
         // overrides de componentes
       );
+
+  static ThemeData dark() => ThemeData(
+        useMaterial3: true,
+        scaffoldBackgroundColor: AppColors.ink,
+        colorScheme: ColorScheme(
+          brightness: Brightness.dark,
+          primary: AppColors.leather,
+          onPrimary: AppColors.ink,
+          surface: AppColors.ink,
+          onSurface: AppColors.chalk,
+          // ... inversão do background principal + textos/surfaces via tokens
+        ),
+        textTheme: AppTextTheme.build(),
+        // overrides de componentes
+      );
 }
 ```
 
@@ -123,9 +138,9 @@ Arquivos no diretório:
 3. **Componentes base ficam em `lib/core/widgets/`** e são reusados — não recriar `AppButton` em features.
 4. **Linter**: configurar `flutter_lints` + regra custom para barrar literal de cor em arquivos fora de `lib/core/theme/`.
 
-## Dark mode
+## Tema escuro
 
-Fora do MVP. A estrutura de tokens já permite — bastará criar um `AppColors.dark` e um `AppTheme.dark()` quando necessário. Mapeamento provável:
+O app terá tema escuro. Ele não é uma paleta nova: é a inversão do background principal com os mesmos tokens.
 
 | Light | Dark |
 |---|---|
@@ -134,3 +149,9 @@ Fora do MVP. A estrutura de tokens já permite — bastará criar um `AppColors.
 | `leather` (primary) | `leather` (mantém) |
 | `mist` (surface) | `stone` |
 | `stone` (text-secondary) | `mist` |
+
+Regras:
+- `AppTheme.light()` usa `chalk` como background principal.
+- `AppTheme.dark()` usa `ink` como background principal.
+- Widgets continuam proibidos de usar cores literais; tema claro/escuro sempre vem de `ThemeData` e tokens.
+- O tema pode seguir a preferência do sistema operacional por padrão, com opção futura de override manual.
