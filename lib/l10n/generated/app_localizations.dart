@@ -238,6 +238,12 @@ abstract class AppLocalizations {
   /// **'Jogadores'**
   String get playersMenuLabel;
 
+  /// No description provided for @skillRatingsMenuLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Avaliar jogadores'**
+  String get skillRatingsMenuLabel;
+
   /// No description provided for @teamsDrawMenuLabel.
   ///
   /// In pt, this message translates to:

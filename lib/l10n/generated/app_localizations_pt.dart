@@ -84,6 +84,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get playersMenuLabel => 'Jogadores';
 
   @override
+  String get skillRatingsMenuLabel => 'Avaliar jogadores';
+
+  @override
   String get teamsDrawMenuLabel => 'Sorteio';
 
   @override

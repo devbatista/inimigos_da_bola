@@ -48,6 +48,20 @@ class AppDatabase extends _$AppDatabase {
       },
     );
   }
+
+  // Limpa todas as tabelas locais. Usado no logout para evitar que dados de
+  // um usuário (ou de um seed antigo do backend) vazem para a próxima sessão.
+  Future<void> clearAllUserData() {
+    return transaction(() async {
+      await delete(skillRatings).go();
+      await delete(sessionStats).go();
+      await delete(attendances).go();
+      await delete(weeklySessions).go();
+      await delete(users).go();
+      await delete(syncQueue).go();
+      await delete(syncState).go();
+    });
+  }
 }
 
 mixin SyncColumns on Table {

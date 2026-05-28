@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/attendance/presentation/screens/guest_attendances_screen.dart';
 import '../../features/attendance/presentation/screens/home_screen.dart';
 import '../../features/players/presentation/screens/players_screen.dart';
+import '../../features/skill_ratings/presentation/screens/skill_ratings_screen.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../auth/auth_providers.dart';
 import 'placeholder_screen.dart';
@@ -108,6 +109,17 @@ class _MoreScreen extends ConsumerWidget {
               Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (context) => const PlayersScreen(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.star_border),
+            title: Text(l10n.skillRatingsMenuLabel),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (context) => const SkillRatingsScreen(),
                 ),
               );
             },
