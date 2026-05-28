@@ -211,14 +211,14 @@ Checklist prático para implementar o app Flutter do Inimigos da Bola.
 
 ## Avaliação de habilidade
 
-- [ ] Criar tela/fluxo para avaliar outros players.
-- [ ] Usar `SkillRatingSlider` de 0 a 100.
-- [ ] Não permitir autoavaliação.
-- [ ] Bloquear reavaliação do mesmo player antes de 1 mês.
-- [ ] Enviar `POST /api/v1/skill_ratings`.
-- [ ] Não mostrar notas individuais recebidas.
-- [ ] Não mostrar notas dadas por outros.
-- [ ] Mostrar apenas o próprio `skill_score` na Home.
+- [x] Criar tela/fluxo para avaliar outros players.
+- [x] Usar `SkillRatingSlider` de 0 a 100.
+- [x] Não permitir autoavaliação.
+- [x] Bloquear reavaliação do mesmo player antes de 1 mês.
+- [x] Enviar `POST /api/v1/skill_ratings`.
+- [x] Não mostrar notas individuais recebidas.
+- [x] Não mostrar notas dadas por outros.
+- [x] Mostrar apenas o próprio `skill_score` na Home.
 
 ## Sorteio de times
 
