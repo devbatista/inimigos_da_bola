@@ -19,4 +19,10 @@ class UsersDao extends DatabaseAccessor<AppDatabase> with _$UsersDaoMixin {
   Future<void> upsertUser(UsersCompanion user) {
     return into(users).insertOnConflictUpdate(user);
   }
+
+  Future<void> softDeleteUser(String id, DateTime deletedAt) {
+    return (update(users)..where((user) => user.id.equals(id))).write(
+      UsersCompanion(deletedAt: Value(deletedAt), updatedAt: Value(deletedAt)),
+    );
+  }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/attendance/presentation/screens/guest_attendances_screen.dart';
 import '../../features/attendance/presentation/screens/home_screen.dart';
+import '../../features/players/presentation/screens/players_screen.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../auth/auth_providers.dart';
 import 'placeholder_screen.dart';
@@ -103,7 +104,13 @@ class _MoreScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.groups_outlined),
             title: Text(l10n.playersMenuLabel),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (context) => const PlayersScreen(),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.settings_outlined),

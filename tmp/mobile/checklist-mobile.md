@@ -199,15 +199,15 @@ Checklist prático para implementar o app Flutter do Inimigos da Bola.
 
 ## Lista de jogadores
 
-- [ ] Tela admin com jogadores cadastrados.
-- [ ] Mostrar nome, label mensalista/avulso e goleiro.
-- [ ] Filtros por label e goleiro.
+- [x] Tela admin com jogadores cadastrados.
+- [x] Mostrar nome, label mensalista/avulso e goleiro.
+- [x] Filtros por label e goleiro.
 - [ ] Ações:
-  - [ ] Editar dados permitidos
-  - [ ] Mudar label
-  - [ ] Soft-delete
-- [ ] Botão "Convidar novo jogador".
-- [ ] Gerar convite via backend.
+  - [x] Editar dados permitidos
+  - [x] Mudar label
+  - [x] Soft-delete
+- [x] Botão "Convidar novo jogador".
+- [x] Gerar convite via backend.
 
 ## Avaliação de habilidade
 
