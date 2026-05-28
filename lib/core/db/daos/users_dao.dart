@@ -12,6 +12,10 @@ class UsersDao extends DatabaseAccessor<AppDatabase> with _$UsersDaoMixin {
     return (select(users)..where((user) => user.deletedAt.isNull())).watch();
   }
 
+  Future<List<User>> listActiveUsers() {
+    return (select(users)..where((user) => user.deletedAt.isNull())).get();
+  }
+
   Future<void> upsertUser(UsersCompanion user) {
     return into(users).insertOnConflictUpdate(user);
   }

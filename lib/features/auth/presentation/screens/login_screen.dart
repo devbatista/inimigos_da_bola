@@ -15,12 +15,17 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _emailFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
+  String? _emailError;
+  String? _passwordError;
 
   @override
   void dispose() {
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -30,83 +35,93 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final auth = ref.watch(authControllerProvider);
+    final inputTextStyle = Theme.of(context).textTheme.bodyLarge?.copyWith(
+      color: Theme.of(context).colorScheme.onSurface,
+    );
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.manual,
             padding: const EdgeInsets.all(AppSpacing.md),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 420),
               child: AppCard(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        l10n.loginTitle,
-                        style: Theme.of(context).textTheme.displayLarge,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      l10n.loginTitle,
+                      style: Theme.of(context).textTheme.displayLarge,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      l10n.loginSubtitle,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    TextField(
+                      controller: _emailController,
+                      focusNode: _emailFocusNode,
+                      autofocus: true,
+                      autocorrect: false,
+                      enableSuggestions: false,
+                      keyboardType: TextInputType.emailAddress,
+                      style: inputTextStyle,
+                      textInputAction: TextInputAction.next,
+                      onEditingComplete: () {
+                        _passwordFocusNode.requestFocus();
+                      },
+                      decoration: InputDecoration(
+                        labelText: l10n.emailFieldLabel,
+                        errorText: _emailError,
                       ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        l10n.loginSubtitle,
-                        style: Theme.of(context).textTheme.bodyMedium,
+                      onChanged: (_) {
+                        if (_emailError != null) {
+                          setState(() => _emailError = null);
+                        }
+                      },
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    TextField(
+                      controller: _passwordController,
+                      focusNode: _passwordFocusNode,
+                      autocorrect: false,
+                      enableSuggestions: false,
+                      obscureText: true,
+                      style: inputTextStyle,
+                      textInputAction: TextInputAction.done,
+                      decoration: InputDecoration(
+                        labelText: l10n.passwordFieldLabel,
+                        errorText: _passwordError,
                       ),
-                      const SizedBox(height: AppSpacing.lg),
-                      TextFormField(
-                        controller: _emailController,
-                        autofillHints: const [AutofillHints.email],
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          labelText: l10n.emailFieldLabel,
-                        ),
-                        validator: (value) {
-                          final email = value?.trim() ?? '';
-                          if (email.isEmpty || !email.contains('@')) {
-                            return l10n.emailFieldError;
-                          }
-                          return null;
-                        },
-                      ),
+                      onChanged: (_) {
+                        if (_passwordError != null) {
+                          setState(() => _passwordError = null);
+                        }
+                      },
+                      onSubmitted: (_) => _submit(),
+                    ),
+                    if (auth.errorMessage != null) ...[
                       const SizedBox(height: AppSpacing.md),
-                      TextFormField(
-                        controller: _passwordController,
-                        autofillHints: const [AutofillHints.password],
-                        obscureText: true,
-                        textInputAction: TextInputAction.done,
-                        decoration: InputDecoration(
-                          labelText: l10n.passwordFieldLabel,
+                      Text(
+                        auth.errorMessage!,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.error,
                         ),
-                        onFieldSubmitted: (_) => _submit(),
-                        validator: (value) {
-                          if ((value ?? '').isEmpty) {
-                            return l10n.passwordFieldError;
-                          }
-                          return null;
-                        },
-                      ),
-                      if (auth.errorMessage != null) ...[
-                        const SizedBox(height: AppSpacing.md),
-                        Text(
-                          auth.errorMessage!,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(context).colorScheme.error,
-                              ),
-                        ),
-                      ],
-                      const SizedBox(height: AppSpacing.lg),
-                      AppButton.primary(
-                        label: auth.submitting
-                            ? l10n.loginSubmittingButton
-                            : l10n.loginButton,
-                        onPressed: auth.submitting ? null : _submit,
                       ),
                     ],
-                  ),
+                    const SizedBox(height: AppSpacing.lg),
+                    AppButton.primary(
+                      label: auth.submitting
+                          ? l10n.loginSubmittingButton
+                          : l10n.loginButton,
+                      onPressed: auth.submitting ? null : _submit,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -117,15 +132,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _submit() {
-    if (!_formKey.currentState!.validate()) {
+    final l10n = AppLocalizations.of(context);
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    setState(() {
+      _emailError = email.isEmpty || !email.contains('@')
+          ? l10n.emailFieldError
+          : null;
+      _passwordError = password.isEmpty ? l10n.passwordFieldError : null;
+    });
+
+    if (_emailError != null || _passwordError != null) {
       return;
     }
 
-    ref
-        .read(authControllerProvider)
-        .signIn(
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-        );
+    ref.read(authControllerProvider).signIn(email: email, password: password);
   }
 }

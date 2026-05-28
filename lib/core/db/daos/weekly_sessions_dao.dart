@@ -16,6 +16,21 @@ class WeeklySessionsDao extends DatabaseAccessor<AppDatabase>
         .watch();
   }
 
+  Future<WeeklySession?> latestActiveWeeklySession() {
+    return (select(weeklySessions)
+          ..where((session) => session.deletedAt.isNull())
+          ..orderBy([(session) => OrderingTerm.desc(session.scheduledAt)])
+          ..limit(1))
+        .getSingleOrNull();
+  }
+
+  Future<WeeklySession?> findActiveById(String id) {
+    return (select(weeklySessions)..where(
+          (session) => session.id.equals(id) & session.deletedAt.isNull(),
+        ))
+        .getSingleOrNull();
+  }
+
   Future<void> upsertWeeklySession(WeeklySessionsCompanion weeklySession) {
     return into(weeklySessions).insertOnConflictUpdate(weeklySession);
   }

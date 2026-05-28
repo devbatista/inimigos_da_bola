@@ -18,6 +18,15 @@ class AttendancesDao extends DatabaseAccessor<AppDatabase>
         .watch();
   }
 
+  Future<List<Attendance>> listByWeeklySession(String weeklySessionId) {
+    return (select(attendances)..where(
+          (attendance) =>
+              attendance.weeklySessionId.equals(weeklySessionId) &
+              attendance.deletedAt.isNull(),
+        ))
+        .get();
+  }
+
   Future<void> upsertAttendance(AttendancesCompanion attendance) {
     return into(attendances).insertOnConflictUpdate(attendance);
   }

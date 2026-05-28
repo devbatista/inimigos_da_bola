@@ -24,12 +24,9 @@ class AuthRepository {
   }
 
   Future<void> signIn({required String email, required String password}) async {
-    final tokens = _isDevCredential(email: email, password: password)
-        ? const AuthTokens(
-            accessToken: 'dev-access-token',
-            refreshToken: 'dev-refresh-token',
-          )
-        : await _signInWithBackend(email: email, password: password);
+    final tokens = enableBackendAuth
+        ? await _signInWithBackend(email: email, password: password)
+        : _signInWithDevCredential(email: email, password: password);
 
     await _tokenStorage.save(tokens);
   }
@@ -46,18 +43,28 @@ class AuthRepository {
     return email.trim().toLowerCase() == devEmail && password == devPassword;
   }
 
+  AuthTokens _signInWithDevCredential({
+    required String email,
+    required String password,
+  }) {
+    if (_isDevCredential(email: email, password: password)) {
+      return const AuthTokens(
+        accessToken: 'dev-access-token',
+        refreshToken: 'dev-refresh-token',
+      );
+    }
+
+    throw const ApiException(
+      code: 'invalid_credentials',
+      message: 'Email ou senha inválidos.',
+      statusCode: 401,
+    );
+  }
+
   Future<AuthTokens> _signInWithBackend({
     required String email,
     required String password,
   }) async {
-    if (!enableBackendAuth) {
-      throw const ApiException(
-        code: 'invalid_credentials',
-        message: 'Email ou senha inválidos.',
-        statusCode: 401,
-      );
-    }
-
     return _authApiClient.signIn(email: email, password: password);
   }
 }
