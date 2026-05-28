@@ -48,4 +48,29 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get casualPlayerLabel => 'Avulso';
+
+  @override
+  String get loginTitle => 'Entrar';
+
+  @override
+  String get loginSubtitle =>
+      'Use email e senha no primeiro acesso. Depois, o app poderá abrir com biometria ou senha.';
+
+  @override
+  String get emailFieldLabel => 'Email';
+
+  @override
+  String get emailFieldError => 'Informe um email válido.';
+
+  @override
+  String get passwordFieldLabel => 'Senha';
+
+  @override
+  String get passwordFieldError => 'Informe sua senha.';
+
+  @override
+  String get loginButton => 'Entrar';
+
+  @override
+  String get loginSubmittingButton => 'Entrando...';
 }

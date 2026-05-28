@@ -22,5 +22,13 @@
     }
   },
   "monthlyPlayerLabel": "Mensalista",
-  "casualPlayerLabel": "Avulso"
+  "casualPlayerLabel": "Avulso",
+  "loginTitle": "Entrar",
+  "loginSubtitle": "Use email e senha no primeiro acesso. Depois, o app poderá abrir com biometria ou senha.",
+  "emailFieldLabel": "Email",
+  "emailFieldError": "Informe um email válido.",
+  "passwordFieldLabel": "Senha",
+  "passwordFieldError": "Informe sua senha.",
+  "loginButton": "Entrar",
+  "loginSubmittingButton": "Entrando..."
 }

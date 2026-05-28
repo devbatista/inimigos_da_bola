@@ -171,6 +171,54 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Avulso'**
   String get casualPlayerLabel;
+
+  /// No description provided for @loginTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entrar'**
+  String get loginTitle;
+
+  /// No description provided for @loginSubtitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Use email e senha no primeiro acesso. Depois, o app poderá abrir com biometria ou senha.'**
+  String get loginSubtitle;
+
+  /// No description provided for @emailFieldLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Email'**
+  String get emailFieldLabel;
+
+  /// No description provided for @emailFieldError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe um email válido.'**
+  String get emailFieldError;
+
+  /// No description provided for @passwordFieldLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Senha'**
+  String get passwordFieldLabel;
+
+  /// No description provided for @passwordFieldError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe sua senha.'**
+  String get passwordFieldError;
+
+  /// No description provided for @loginButton.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entrar'**
+  String get loginButton;
+
+  /// No description provided for @loginSubmittingButton.
+  ///
+  /// In pt, this message translates to:
+  /// **'Entrando...'**
+  String get loginSubmittingButton;
 }
 
 class _AppLocalizationsDelegate
