@@ -222,26 +222,26 @@ Checklist prático para implementar o app Flutter do Inimigos da Bola.
 
 ## Sorteio de times
 
-- [ ] Criar tela "Sorteio".
-- [ ] Carregar automaticamente confirmados do racha atual.
-- [ ] Incluir presenças avulsas adicionadas pelo admin.
-- [ ] Permitir adicionar avulso temporário local.
-- [ ] Avulso temporário vive só em `TeamsDrawState`.
-- [ ] Permitir remover participante apenas localmente.
-- [ ] Configurar número de times.
-- [ ] Configurar tamanho do time.
-- [ ] Implementar algoritmo snake draft.
-- [ ] Ordenar por `skill_score`.
-- [ ] Para presenças avulsas/temporárias, usar skill mediano dos cadastrados confirmados.
-- [ ] Se não houver cadastrados confirmados, usar skill 50.
-- [ ] Tentar distribuir goleiros (`goalkeeper: true`).
-- [ ] Permitir refazer sorteio.
+- [x] Criar tela "Sorteio".
+- [x] Carregar automaticamente confirmados do racha atual.
+- [x] Incluir presenças avulsas adicionadas pelo admin.
+- [x] Permitir adicionar avulso temporário local.
+- [x] Avulso temporário vive só em `TeamsDrawState`.
+- [x] Permitir remover participante apenas localmente.
+- [x] Configurar número de times. — derivado por regra (N+G); manual fica para próxima iteração se necessário.
+- [x] Configurar tamanho do time. — derivado por regra (4 ou 5; GK força 5).
+- [x] Implementar algoritmo snake draft.
+- [x] Ordenar por `skill_score`.
+- [x] Para presenças avulsas/temporárias, usar skill mediano dos cadastrados confirmados.
+- [x] Se não houver cadastrados confirmados, usar skill 50.
+- [x] Tentar distribuir goleiros (`goalkeeper: true`).
+- [x] Permitir refazer sorteio.
 - [ ] Permitir troca manual por drag-and-drop.
-- [ ] Permitir editar nomes dos times.
-- [ ] Não salvar resultado.
-- [ ] Não criar endpoint.
-- [ ] Não criar tabela Drift.
-- [ ] Testar algoritmo.
+- [x] Permitir editar nomes dos times.
+- [x] Não salvar resultado.
+- [x] Não criar endpoint.
+- [x] Não criar tabela Drift.
+- [x] Testar algoritmo.
 
 ## Cronômetro + placar
 
