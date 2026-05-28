@@ -5,6 +5,7 @@ import '../../features/attendance/presentation/screens/guest_attendances_screen.
 import '../../features/attendance/presentation/screens/home_screen.dart';
 import '../../features/players/presentation/screens/players_screen.dart';
 import '../../features/skill_ratings/presentation/screens/skill_ratings_screen.dart';
+import '../../features/teams/presentation/screens/teams_draw_screen.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../auth/auth_providers.dart';
 import 'placeholder_screen.dart';
@@ -57,7 +58,7 @@ class _AppShellState extends ConsumerState<AppShell> {
         label: l10n.teamsDrawMenuLabel,
         icon: Icons.shuffle_outlined,
         selectedIcon: Icons.shuffle,
-        screen: PlaceholderScreen(title: l10n.teamsDrawMenuLabel),
+        screen: const TeamsDrawScreen(),
       ),
       _AppDestination(
         label: l10n.gameModeMenuLabel,
