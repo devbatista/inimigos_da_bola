@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/auth/auth_controller.dart';
 import 'core/auth/auth_providers.dart';
+import 'core/navigation/app_shell.dart';
 import 'core/theme/app_theme.dart';
-import 'features/attendance/presentation/screens/home_screen.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'l10n/generated/app_localizations.dart';
 
@@ -40,7 +40,7 @@ class _AuthGate extends ConsumerWidget {
 
     return switch (status) {
       AuthStatus.checking => const _SplashScreen(),
-      AuthStatus.authenticated => const HomeScreen(),
+      AuthStatus.authenticated => const AppShell(),
       AuthStatus.unauthenticated => const LoginScreen(),
     };
   }

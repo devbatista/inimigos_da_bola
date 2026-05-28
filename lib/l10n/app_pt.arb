@@ -30,5 +30,14 @@
   "passwordFieldLabel": "Senha",
   "passwordFieldError": "Informe sua senha.",
   "loginButton": "Entrar",
-  "loginSubmittingButton": "Entrando..."
+  "loginSubmittingButton": "Entrando...",
+  "homeMenuLabel": "Início",
+  "guestAttendancesMenuLabel": "Confirmações avulsas",
+  "playersMenuLabel": "Jogadores",
+  "teamsDrawMenuLabel": "Sorteio",
+  "gameModeMenuLabel": "Modo Jogo",
+  "statsMenuLabel": "Stats",
+  "moreMenuLabel": "Mais",
+  "settingsMenuLabel": "Configurações",
+  "logoutMenuLabel": "Sair"
 }

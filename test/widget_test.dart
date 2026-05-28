@@ -69,11 +69,47 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.text('Inimigos da Bola'), findsOneWidget);
+    expect(find.text('Início'), findsWidgets);
     expect(find.text('Racha de segunda — 03/06'), findsOneWidget);
     expect(find.text('12 de 20 confirmados'), findsOneWidget);
     expect(find.text('Meu skill'), findsOneWidget);
     expect(find.text('Vou!'), findsOneWidget);
     expect(find.text('Não vou'), findsOneWidget);
+  });
+
+  testWidgets('mostra menu inferior e ações secundárias em Mais', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          tokenStorageProvider.overrideWithValue(
+            InMemoryTokenStorage(
+              const AuthTokens(
+                accessToken: 'access-token',
+                refreshToken: 'refresh-token',
+              ),
+            ),
+          ),
+        ],
+        child: const InimigosDaBolaApp(),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('Início'), findsWidgets);
+    expect(find.text('Sorteio'), findsOneWidget);
+    expect(find.text('Modo Jogo'), findsOneWidget);
+    expect(find.text('Stats'), findsOneWidget);
+    expect(find.text('Mais'), findsOneWidget);
+
+    await tester.tap(find.text('Mais'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Confirmações avulsas'), findsOneWidget);
+    expect(find.text('Jogadores'), findsOneWidget);
+    expect(find.text('Configurações'), findsOneWidget);
+    expect(find.text('Sair'), findsOneWidget);
   });
 }

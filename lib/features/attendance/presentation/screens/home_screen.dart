@@ -29,48 +29,45 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.appTitle)),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.md,
-            AppSpacing.sm,
-            AppSpacing.md,
-            AppSpacing.lg,
-          ),
-          children: [
-            const _WeeklySessionCard(),
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              l10n.confirmedSectionTitle,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            AppCard(
-              child: Column(
-                children: [
-                  for (final player in _confirmedPlayers) ...[
-                    PlayerTile(
-                      name: player.name,
-                      label: player.label(l10n),
-                      goalkeeper: player.goalkeeper,
-                      guest: player.guest,
-                    ),
-                    if (player != _confirmedPlayers.last)
-                      const Divider(height: AppSpacing.lg),
-                  ],
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            _CollapsedSection(title: l10n.waitlistSectionTitle, count: 2),
-            const SizedBox(height: AppSpacing.sm),
-            _CollapsedSection(title: l10n.declinedSectionTitle, count: 3),
-            const SizedBox(height: AppSpacing.sm),
-            _CollapsedSection(title: l10n.pendingSectionTitle, count: 5),
-          ],
+    return SafeArea(
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.sm,
+          AppSpacing.md,
+          AppSpacing.lg,
         ),
+        children: [
+          const _WeeklySessionCard(),
+          const SizedBox(height: AppSpacing.lg),
+          Text(
+            l10n.confirmedSectionTitle,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          AppCard(
+            child: Column(
+              children: [
+                for (final player in _confirmedPlayers) ...[
+                  PlayerTile(
+                    name: player.name,
+                    label: player.label(l10n),
+                    goalkeeper: player.goalkeeper,
+                    guest: player.guest,
+                  ),
+                  if (player != _confirmedPlayers.last)
+                    const Divider(height: AppSpacing.lg),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          _CollapsedSection(title: l10n.waitlistSectionTitle, count: 2),
+          const SizedBox(height: AppSpacing.sm),
+          _CollapsedSection(title: l10n.declinedSectionTitle, count: 3),
+          const SizedBox(height: AppSpacing.sm),
+          _CollapsedSection(title: l10n.pendingSectionTitle, count: 5),
+        ],
       ),
     );
   }

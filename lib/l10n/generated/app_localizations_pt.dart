@@ -73,4 +73,31 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get loginSubmittingButton => 'Entrando...';
+
+  @override
+  String get homeMenuLabel => 'Início';
+
+  @override
+  String get guestAttendancesMenuLabel => 'Confirmações avulsas';
+
+  @override
+  String get playersMenuLabel => 'Jogadores';
+
+  @override
+  String get teamsDrawMenuLabel => 'Sorteio';
+
+  @override
+  String get gameModeMenuLabel => 'Modo Jogo';
+
+  @override
+  String get statsMenuLabel => 'Stats';
+
+  @override
+  String get moreMenuLabel => 'Mais';
+
+  @override
+  String get settingsMenuLabel => 'Configurações';
+
+  @override
+  String get logoutMenuLabel => 'Sair';
 }

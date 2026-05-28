@@ -219,6 +219,60 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Entrando...'**
   String get loginSubmittingButton;
+
+  /// No description provided for @homeMenuLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Início'**
+  String get homeMenuLabel;
+
+  /// No description provided for @guestAttendancesMenuLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmações avulsas'**
+  String get guestAttendancesMenuLabel;
+
+  /// No description provided for @playersMenuLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Jogadores'**
+  String get playersMenuLabel;
+
+  /// No description provided for @teamsDrawMenuLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sorteio'**
+  String get teamsDrawMenuLabel;
+
+  /// No description provided for @gameModeMenuLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Modo Jogo'**
+  String get gameModeMenuLabel;
+
+  /// No description provided for @statsMenuLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Stats'**
+  String get statsMenuLabel;
+
+  /// No description provided for @moreMenuLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais'**
+  String get moreMenuLabel;
+
+  /// No description provided for @settingsMenuLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Configurações'**
+  String get settingsMenuLabel;
+
+  /// No description provided for @logoutMenuLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sair'**
+  String get logoutMenuLabel;
 }
 
 class _AppLocalizationsDelegate
