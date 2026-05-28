@@ -186,16 +186,16 @@ Checklist prático para implementar o app Flutter do Inimigos da Bola.
 
 ## Presenças avulsas do admin
 
-- [ ] Criar tela admin "Confirmações avulsas".
-- [ ] Criar `GuestAttendanceRepository`.
-- [ ] Botão "Adicionar avulso".
-- [ ] Input de nome.
-- [ ] Chamar `POST /weekly_sessions/:id/guest_attendances`.
-- [ ] Permitir remover/cancelar presença avulsa.
-- [ ] Chamar `DELETE /weekly_sessions/:id/guest_attendances/:attendance_id`.
-- [ ] Não usar `sync_queue`.
-- [ ] Sem rede: mostrar erro e manter estado local anterior.
-- [ ] Garantir que presença avulsa atualiza contador e listas após resposta.
+- [x] Criar tela admin "Confirmações avulsas".
+- [x] Criar `GuestAttendanceRepository`.
+- [x] Botão "Adicionar avulso".
+- [x] Input de nome.
+- [x] Chamar `POST /weekly_sessions/:id/guest_attendances`.
+- [x] Permitir remover/cancelar presença avulsa.
+- [x] Chamar `DELETE /weekly_sessions/:id/guest_attendances/:attendance_id`.
+- [x] Não usar `sync_queue`.
+- [x] Sem rede: mostrar erro e manter estado local anterior.
+- [x] Garantir que presença avulsa atualiza contador e listas após resposta.
 
 ## Lista de jogadores
 

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../auth/auth_providers.dart';
 import 'clients/attendances_api_client.dart';
+import 'clients/guest_attendances_api_client.dart';
 import 'clients/sync_api_client.dart';
 import 'clients/users_api_client.dart';
 import 'clients/weekly_sessions_api_client.dart';
@@ -14,6 +15,12 @@ final weeklySessionsApiClientProvider = Provider<WeeklySessionsApiClient>((
 
 final attendancesApiClientProvider = Provider<AttendancesApiClient>((ref) {
   return AttendancesApiClient(ref.watch(apiClientProvider).dio);
+});
+
+final guestAttendancesApiClientProvider = Provider<GuestAttendancesApiClient>((
+  ref,
+) {
+  return GuestAttendancesApiClient(ref.watch(apiClientProvider).dio);
 });
 
 final usersApiClientProvider = Provider<UsersApiClient>((ref) {

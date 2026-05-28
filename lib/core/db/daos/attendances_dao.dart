@@ -30,4 +30,10 @@ class AttendancesDao extends DatabaseAccessor<AppDatabase>
   Future<void> upsertAttendance(AttendancesCompanion attendance) {
     return into(attendances).insertOnConflictUpdate(attendance);
   }
+
+  Future<void> deleteAttendance(String id) {
+    return (delete(
+      attendances,
+    )..where((attendance) => attendance.id.equals(id))).go();
+  }
 }
