@@ -53,6 +53,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Center(
+                      child: Image.asset(
+                        'assets/images/inimigos_da_bola.png',
+                        height: 156,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
                     Text(
                       l10n.loginTitle,
                       style: Theme.of(context).textTheme.displayLarge,
