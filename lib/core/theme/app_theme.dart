@@ -69,6 +69,17 @@ abstract final class AppTheme {
           side: BorderSide(color: surfaceVariant),
         ),
       ),
+      dividerTheme: DividerThemeData(
+        color: surfaceVariant.subtle,
+        thickness: 1,
+        space: 1,
+      ),
+      expansionTileTheme: ExpansionTileThemeData(
+        shape: const Border(),
+        collapsedShape: const Border(),
+        iconColor: AppColors.leather,
+        collapsedIconColor: secondary,
+      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: surfaceVariant.subtle,

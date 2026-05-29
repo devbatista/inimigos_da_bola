@@ -369,7 +369,13 @@ class _AttendanceSection extends StatelessWidget {
                 ),
               ),
               if (attendance != attendances.last)
-                const Divider(height: AppSpacing.lg),
+                const Padding(
+                  padding: EdgeInsets.only(
+                    left: AppSpacing.xxl,
+                    right: AppSpacing.sm,
+                  ),
+                  child: Divider(height: AppSpacing.lg),
+                ),
             ],
         ],
       ),
