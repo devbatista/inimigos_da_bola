@@ -76,52 +76,10 @@ class GuestAttendancesScreen extends ConsumerWidget {
   }
 
   Future<void> _showCreateDialog(BuildContext context, WidgetRef ref) async {
-    final nameController = TextEditingController();
-    String? errorText;
-
     final guestName = await showDialog<String>(
       context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text('Adicionar avulso'),
-              content: TextField(
-                controller: nameController,
-                autofocus: true,
-                textCapitalization: TextCapitalization.words,
-                decoration: InputDecoration(
-                  labelText: 'Nome',
-                  errorText: errorText,
-                ),
-                onChanged: (_) {
-                  if (errorText != null) {
-                    setState(() => errorText = null);
-                  }
-                },
-                onSubmitted: (_) => _submitDialog(context, nameController, () {
-                  setState(() => errorText = 'Informe o nome do avulso.');
-                }),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancelar'),
-                ),
-                FilledButton(
-                  onPressed: () => _submitDialog(context, nameController, () {
-                    setState(() => errorText = 'Informe o nome do avulso.');
-                  }),
-                  child: const Text('Adicionar'),
-                ),
-              ],
-            );
-          },
-        );
-      },
+      builder: (context) => const _CreateGuestDialog(),
     );
-
-    nameController.dispose();
 
     if (guestName == null || guestName.isEmpty) {
       return;
@@ -129,19 +87,65 @@ class GuestAttendancesScreen extends ConsumerWidget {
 
     await ref.read(guestAttendanceControllerProvider).create(guestName);
   }
+}
 
-  void _submitDialog(
-    BuildContext context,
-    TextEditingController controller,
-    VoidCallback onInvalid,
-  ) {
-    final guestName = controller.text.trim();
+class _CreateGuestDialog extends StatefulWidget {
+  const _CreateGuestDialog();
+
+  @override
+  State<_CreateGuestDialog> createState() => _CreateGuestDialogState();
+}
+
+class _CreateGuestDialogState extends State<_CreateGuestDialog> {
+  final _nameController = TextEditingController();
+  String? _errorText;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    final guestName = _nameController.text.trim();
     if (guestName.isEmpty) {
-      onInvalid();
+      setState(() => _errorText = 'Informe o nome do avulso.');
       return;
     }
 
     Navigator.of(context).pop(guestName);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Adicionar avulso'),
+      content: TextField(
+        controller: _nameController,
+        autofocus: true,
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+          labelText: 'Nome',
+          errorText: _errorText,
+        ),
+        onChanged: (_) {
+          if (_errorText != null) {
+            setState(() => _errorText = null);
+          }
+        },
+        onSubmitted: (_) => _submit(),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancelar'),
+        ),
+        FilledButton(
+          onPressed: _submit,
+          child: const Text('Adicionar'),
+        ),
+      ],
+    );
   }
 }
 
