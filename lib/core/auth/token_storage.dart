@@ -6,6 +6,11 @@ abstract interface class TokenStorage {
   Future<AuthTokens?> read();
   Future<void> save(AuthTokens tokens);
   Future<void> clear();
+
+  // Identificador do usuário logado, persistido para permitir leitura offline
+  // da Home sem depender de uma chamada `me()` online.
+  Future<String?> readCurrentUserId();
+  Future<void> saveCurrentUserId(String userId);
 }
 
 class SecureTokenStorage implements TokenStorage {
@@ -19,6 +24,7 @@ class SecureTokenStorage implements TokenStorage {
 
   static const _accessTokenKey = 'access_token';
   static const _refreshTokenKey = 'refresh_token';
+  static const _currentUserIdKey = 'current_user_id';
 
   final FlutterSecureStorage _storage;
 
@@ -44,5 +50,16 @@ class SecureTokenStorage implements TokenStorage {
   Future<void> clear() async {
     await _storage.delete(key: _accessTokenKey);
     await _storage.delete(key: _refreshTokenKey);
+    await _storage.delete(key: _currentUserIdKey);
+  }
+
+  @override
+  Future<String?> readCurrentUserId() {
+    return _storage.read(key: _currentUserIdKey);
+  }
+
+  @override
+  Future<void> saveCurrentUserId(String userId) {
+    return _storage.write(key: _currentUserIdKey, value: userId);
   }
 }

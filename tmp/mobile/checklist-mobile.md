@@ -152,7 +152,7 @@ Checklist prático para implementar o app Flutter do Inimigos da Bola.
   - [ ] Senha como fallback
 - [ ] Implementar logout.
 - [ ] Implementar recuperação de senha.
-- [ ] Abrir app offline se houver sessão/cache válidos.
+- [x] Abrir app offline se houver sessão/cache válidos.
 
 ## Home
 

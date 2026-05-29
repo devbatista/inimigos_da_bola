@@ -1,9 +1,11 @@
 import 'package:drift/drift.dart';
 
+import '../../../core/api/api_exception.dart';
 import '../../../core/api/clients/attendances_api_client.dart';
 import '../../../core/api/clients/sync_api_client.dart';
 import '../../../core/api/clients/users_api_client.dart';
 import '../../../core/api/clients/weekly_sessions_api_client.dart';
+import '../../../core/auth/token_storage.dart';
 import '../../../core/db/app_database.dart';
 import '../../../core/db/daos/attendances_dao.dart';
 import '../../../core/db/daos/users_dao.dart';
@@ -15,6 +17,7 @@ class AttendanceRepository {
     required AttendancesApiClient attendancesApiClient,
     required UsersApiClient usersApiClient,
     required SyncApiClient syncApiClient,
+    required TokenStorage tokenStorage,
     required UsersDao usersDao,
     required WeeklySessionsDao weeklySessionsDao,
     required AttendancesDao attendancesDao,
@@ -22,6 +25,7 @@ class AttendanceRepository {
        _attendancesApiClient = attendancesApiClient,
        _usersApiClient = usersApiClient,
        _syncApiClient = syncApiClient,
+       _tokenStorage = tokenStorage,
        _usersDao = usersDao,
        _weeklySessionsDao = weeklySessionsDao,
        _attendancesDao = attendancesDao;
@@ -30,25 +34,73 @@ class AttendanceRepository {
   final AttendancesApiClient _attendancesApiClient;
   final UsersApiClient _usersApiClient;
   final SyncApiClient _syncApiClient;
+  final TokenStorage _tokenStorage;
   final UsersDao _usersDao;
   final WeeklySessionsDao _weeklySessionsDao;
   final AttendancesDao _attendancesDao;
 
   Future<AttendanceHomeData> load() async {
-    final currentUserJson = await _usersApiClient.me();
-    final currentSessionJson = await _weeklySessionsApiClient.current();
-    final syncJson = await _syncApiClient.pull(
-      entities: const ['users', 'weekly_sessions', 'attendances'],
-    );
+    try {
+      final currentUserJson = await _usersApiClient.me();
+      final currentSessionJson = await _weeklySessionsApiClient.current();
+      final syncJson = await _syncApiClient.pull(
+        entities: const ['users', 'weekly_sessions', 'attendances'],
+      );
 
-    await _upsertUser(currentUserJson);
-    await _upsertWeeklySession(currentSessionJson);
-    await _applySync(syncJson);
+      await _upsertUser(currentUserJson);
+      await _upsertWeeklySession(currentSessionJson);
+      await _applySync(syncJson);
 
-    final sessionId = currentSessionJson['id'] as String;
-    return _readHomeData(
-      sessionId: sessionId,
-      currentUserId: currentUserJson['id'] as String,
+      final currentUserId = currentUserJson['id'] as String;
+      await _tokenStorage.saveCurrentUserId(currentUserId);
+
+      return _readHomeData(
+        sessionId: currentSessionJson['id'] as String,
+        currentUserId: currentUserId,
+      );
+    } on ApiException catch (exception) {
+      // Sem rede: cai para o cache local se houver sessão/usuário salvos.
+      // Erros de API com resposta (ex.: 401/500) continuam propagando.
+      if (exception.code == 'network_error') {
+        final cached = await _readCachedHomeData();
+        if (cached != null) {
+          return cached;
+        }
+      }
+      rethrow;
+    }
+  }
+
+  Future<AttendanceHomeData?> _readCachedHomeData() async {
+    final currentUserId = await _tokenStorage.readCurrentUserId();
+    if (currentUserId == null) {
+      return null;
+    }
+
+    final session = await _weeklySessionsDao.latestActiveWeeklySession();
+    if (session == null) {
+      return null;
+    }
+
+    final users = await _usersDao.listActiveUsers();
+    User? currentUser;
+    for (final user in users) {
+      if (user.id == currentUserId) {
+        currentUser = user;
+        break;
+      }
+    }
+    if (currentUser == null) {
+      return null;
+    }
+
+    final attendances = await _attendancesDao.listByWeeklySession(session.id);
+    return AttendanceHomeData(
+      session: session,
+      currentUser: currentUser,
+      attendances: attendances,
+      usersById: {for (final user in users) user.id: user},
+      updatedAt: session.updatedAt,
     );
   }
 

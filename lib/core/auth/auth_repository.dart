@@ -73,6 +73,7 @@ class InMemoryTokenStorage implements TokenStorage {
   InMemoryTokenStorage([this._tokens]);
 
   AuthTokens? _tokens;
+  String? _currentUserId;
 
   @override
   Future<AuthTokens?> read() async => _tokens;
@@ -85,5 +86,14 @@ class InMemoryTokenStorage implements TokenStorage {
   @override
   Future<void> clear() async {
     _tokens = null;
+    _currentUserId = null;
+  }
+
+  @override
+  Future<String?> readCurrentUserId() async => _currentUserId;
+
+  @override
+  Future<void> saveCurrentUserId(String userId) async {
+    _currentUserId = userId;
   }
 }
