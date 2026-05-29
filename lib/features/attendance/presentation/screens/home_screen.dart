@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/db/app_database.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -118,12 +119,10 @@ class _WeeklySessionCard extends ConsumerWidget {
                     const SizedBox(height: AppSpacing.sm),
                     Row(
                       children: [
-                        const Icon(Icons.place_outlined, size: 18),
-                        const SizedBox(width: AppSpacing.xs),
                         Expanded(
-                          child: Text(
-                            'Arena X',
-                            style: Theme.of(context).textTheme.bodyLarge,
+                          child: _LocationAction(
+                            label: 'Arena X',
+                            onTap: () => _showMapOptions(context, 'Arena X'),
                           ),
                         ),
                         const SizedBox(width: AppSpacing.sm),
@@ -231,6 +230,85 @@ class _WeeklySessionCard extends ConsumerWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Future<void> _showMapOptions(BuildContext context, String location) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.map_outlined),
+                title: const Text('Abrir no Google Maps'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _launchMap(context, _googleMapsUri(location));
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.navigation_outlined),
+                title: const Text('Abrir no Waze'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _launchMap(context, _wazeUri(location));
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _launchMap(BuildContext context, Uri uri) async {
+    var launched = false;
+    try {
+      launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      launched = false;
+    }
+
+    if (!launched && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Não foi possível abrir o mapa.')),
+      );
+    }
+  }
+}
+
+class _LocationAction extends StatelessWidget {
+  const _LocationAction({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadius.sm),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.place_outlined, size: 18),
+            const SizedBox(width: AppSpacing.xs),
+            Flexible(
+              child: Text(
+                label,
+                style: Theme.of(context).textTheme.bodyLarge,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -515,6 +593,17 @@ String _weekday(DateTime date) {
 
 String _time(DateTime date) {
   return '${_twoDigits(date.hour)}:${_twoDigits(date.minute)}';
+}
+
+Uri _googleMapsUri(String location) {
+  return Uri.https('www.google.com', '/maps/search/', {
+    'api': '1',
+    'query': location,
+  });
+}
+
+Uri _wazeUri(String location) {
+  return Uri.https('waze.com', '/ul', {'q': location, 'navigate': 'yes'});
 }
 
 String _twoDigits(int value) {

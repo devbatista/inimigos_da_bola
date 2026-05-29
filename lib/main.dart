@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/auth/auth_controller.dart';
@@ -16,7 +17,9 @@ import 'features/players/presentation/controllers/players_providers.dart';
 import 'features/skill_ratings/presentation/controllers/skill_ratings_providers.dart';
 import 'l10n/generated/app_localizations.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const ProviderScope(child: InimigosDaBolaApp()));
 }
 
