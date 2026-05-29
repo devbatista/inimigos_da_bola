@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/attendance/presentation/screens/guest_attendances_screen.dart';
 import '../../features/attendance/presentation/screens/home_screen.dart';
+import '../../features/game_mode/presentation/screens/game_mode_screen.dart';
 import '../../features/players/presentation/screens/players_screen.dart';
 import '../../features/skill_ratings/presentation/screens/skill_ratings_screen.dart';
 import '../../features/teams/presentation/screens/teams_draw_screen.dart';
@@ -64,7 +65,7 @@ class _AppShellState extends ConsumerState<AppShell> {
         label: l10n.gameModeMenuLabel,
         icon: Icons.sports_soccer_outlined,
         selectedIcon: Icons.sports_soccer,
-        screen: PlaceholderScreen(title: l10n.gameModeMenuLabel),
+        screen: const GameModeScreen(),
       ),
       _AppDestination(
         label: l10n.statsMenuLabel,

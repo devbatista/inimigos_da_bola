@@ -245,20 +245,20 @@ Checklist prático para implementar o app Flutter do Inimigos da Bola.
 
 ## Cronômetro + placar
 
-- [ ] Criar tela "Modo Jogo".
-- [ ] Placar grande `Time A` vs `Time B`.
-- [ ] Botões `+` e `-` por time.
-- [ ] Nomes dos times editáveis.
-- [ ] Cronômetro central `MM:SS`.
-- [ ] Modo progressivo.
-- [ ] Modo regressivo com default `08:00`.
-- [ ] Botões `Iniciar`, `Pausar`, `Resetar`.
-- [ ] Destacar fim por 8 minutos ou 2 gols.
-- [ ] Usar `wakelock_plus` enquanto tela estiver aberta.
-- [ ] Continuar contando matematicamente ao voltar do background.
-- [ ] Estado em Riverpod `AutoDispose`.
-- [ ] Sem persistência.
-- [ ] Sem sync.
+- [x] Criar tela "Modo Jogo".
+- [x] Placar grande `Time A` vs `Time B`.
+- [x] Botões `+` e `-` por time.
+- [x] Nomes dos times editáveis.
+- [x] Cronômetro central `MM:SS`.
+- [x] Modo progressivo.
+- [x] Modo regressivo com default `08:00`.
+- [x] Botões `Iniciar`, `Pausar`, `Resetar`.
+- [x] Destacar fim por 8 minutos ou 2 gols.
+- [x] Usar `wakelock_plus` enquanto tela estiver aberta.
+- [x] Continuar contando matematicamente ao voltar do background.
+- [x] Estado em Riverpod `AutoDispose`.
+- [x] Sem persistência.
+- [x] Sem sync.
 
 ## Estatísticas
 
@@ -305,7 +305,7 @@ Checklist prático para implementar o app Flutter do Inimigos da Bola.
 ## Testes
 
 - [ ] Unit tests do algoritmo de sorteio.
-- [ ] Unit tests do cronômetro.
+- [x] Unit tests do cronômetro.
 - [ ] Tests de repositories com Drift in-memory.
 - [x] Widget tests da Home.
 - [ ] Widget tests do Sorteio.
