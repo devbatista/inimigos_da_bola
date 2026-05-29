@@ -8,6 +8,7 @@ import 'core/auth/auth_controller.dart';
 import 'core/auth/auth_providers.dart';
 import 'core/db/database_providers.dart';
 import 'core/navigation/app_shell.dart';
+import 'core/sync/sync_providers.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_mode_providers.dart';
 import 'features/attendance/presentation/controllers/attendance_providers.dart';
@@ -58,6 +59,9 @@ class _AuthGate extends ConsumerWidget {
           ref.invalidate(playersControllerProvider);
           ref.invalidate(skillRatingsControllerProvider);
           unawaited(ref.read(appDatabaseProvider).clearAllUserData());
+        }
+        if (next == AuthStatus.authenticated) {
+          unawaited(ref.read(syncEngineProvider).drain());
         }
       },
     );

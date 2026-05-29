@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 import '../../data/stats_repository.dart';
 
 class StatsController extends ChangeNotifier {
-  StatsController(this._repository);
+  StatsController(this._repository, {Future<void> Function()? onAfterSave})
+    : _onAfterSave = onAfterSave;
 
   final StatsRepository _repository;
+  final Future<void> Function()? _onAfterSave;
 
   StatsData? _data;
   bool _loading = false;
@@ -50,6 +54,10 @@ class StatsController extends ChangeNotifier {
         weeklySessionId: session.id,
         inputs: inputs,
       );
+      final onAfterSave = _onAfterSave;
+      if (onAfterSave != null) {
+        unawaited(onAfterSave());
+      }
       _successMessage = 'Stats salvas no aparelho e enfileiradas para sync.';
     } catch (_) {
       _errorMessage = 'Não foi possível salvar as stats.';

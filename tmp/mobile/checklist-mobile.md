@@ -288,15 +288,15 @@ Checklist prático para implementar o app Flutter do Inimigos da Bola.
 ## Sync engine
 
 - [x] Implementar pull `GET /api/v1/sync`.
-- [ ] Implementar push `POST /api/v1/sync/{entity}`.
-- [ ] Usar `sync_queue` para fluxos offline-first.
+- [x] Implementar push `POST /api/v1/sync/{entity}`.
+- [x] Usar `sync_queue` para fluxos offline-first.
 - [x] Não usar `sync_queue` para presença.
-- [ ] Implementar idempotency key.
-- [ ] Implementar backoff exponencial.
-- [ ] Marcar mutação como suspended após 10 falhas.
-- [ ] Implementar tela escondida "Status de sincronização".
+- [x] Implementar idempotency key.
+- [x] Implementar backoff exponencial.
+- [x] Marcar mutação como suspended após 10 falhas.
+- [x] Implementar tela escondida "Status de sincronização".
 - [ ] Triggers:
-  - [ ] Cold start
+  - [x] Cold start
   - [ ] Reconexão de rede
   - [ ] Background periódico
   - [ ] Push silencioso

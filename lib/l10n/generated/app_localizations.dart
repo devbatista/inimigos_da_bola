@@ -175,13 +175,13 @@ abstract class AppLocalizations {
   /// No description provided for @loginTitle.
   ///
   /// In pt, this message translates to:
-  /// **'Entrar'**
+  /// **'Bora pro racha?'**
   String get loginTitle;
 
   /// No description provided for @loginSubtitle.
   ///
   /// In pt, this message translates to:
-  /// **'Use email e senha no primeiro acesso. Depois, o app poderá abrir com biometria ou senha.'**
+  /// **'Entre para confirmar presença e acompanhar a turma.'**
   String get loginSubtitle;
 
   /// No description provided for @emailFieldLabel.

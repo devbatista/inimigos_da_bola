@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../../core/db/database_providers.dart';
+import '../../../../core/sync/sync_providers.dart';
 import '../../data/stats_repository.dart';
 import 'stats_controller.dart';
 
@@ -20,7 +21,10 @@ final statsRepositoryProvider = Provider<StatsRepository>((ref) {
 
 final statsControllerProvider =
     ChangeNotifierProvider.autoDispose<StatsController>((ref) {
-      final controller = StatsController(ref.watch(statsRepositoryProvider));
+      final controller = StatsController(
+        ref.watch(statsRepositoryProvider),
+        onAfterSave: () => ref.read(syncEngineProvider).drain(),
+      );
       unawaited(controller.load());
       return controller;
     });
