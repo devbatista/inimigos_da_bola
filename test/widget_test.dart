@@ -95,7 +95,8 @@ void main() {
     expect(find.text('Início'), findsWidgets);
     expect(find.text('Racha de quarta — 03/06'), findsOneWidget);
     expect(find.text('1 de 20 confirmados'), findsOneWidget);
-    expect(find.text('Meu skill'), findsOneWidget);
+    expect(find.text('Meu skill'), findsNothing);
+    expect(find.text('Pendentes'), findsOneWidget);
     expect(find.text('Vou!'), findsOneWidget);
     expect(find.text('Não vou'), findsOneWidget);
   });

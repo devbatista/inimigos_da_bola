@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/db/app_database.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_card.dart';
+import '../../../../core/widgets/attendance_chip.dart';
 import '../../../../core/widgets/player_tile.dart';
-import '../../../../core/widgets/skill_score_badge.dart';
 import '../../../../core/widgets/status_banner.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../data/attendance_repository.dart';
@@ -88,31 +90,106 @@ class _WeeklySessionCard extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final controller = ref.watch(attendanceControllerProvider);
     final scheduledAt = data.session.scheduledAt;
+    final confirmedCount = data.mainConfirmed.length;
+    final maxPlayers = data.session.maxPlayers;
+    final waitlistCount = data.waitlisted.length;
+    final progress = maxPlayers == 0
+        ? 0.0
+        : (confirmedCount / maxPlayers).clamp(0.0, 1.0);
+    final currentAttendance = data.attendances
+        .where((attendance) => attendance.userId == data.currentUser.id)
+        .firstOrNull;
 
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            _sessionTitle(scheduledAt),
-            style: Theme.of(context).textTheme.displayLarge,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _sessionTitle(scheduledAt),
+                      style: Theme.of(context).textTheme.displayLarge,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Row(
+                      children: [
+                        const Icon(Icons.place_outlined, size: 18),
+                        const SizedBox(width: AppSpacing.xs),
+                        Expanded(
+                          child: Text(
+                            'Arena X',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        const Icon(Icons.schedule, size: 18),
+                        const SizedBox(width: AppSpacing.xs),
+                        Text(
+                          _time(scheduledAt),
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              _MyStatusChip(attendance: currentAttendance),
+            ],
           ),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            'Arena X · ${_time(scheduledAt)}',
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.sm,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              _ConfirmedCounter(
-                confirmed: data.mainConfirmed.length,
-                maxPlayers: data.session.maxPlayers,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadius.sm),
+            child: LinearProgressIndicator(
+              value: progress,
+              minHeight: AppSpacing.sm,
+              backgroundColor: Theme.of(
+                context,
+              ).colorScheme.surfaceContainerHighest,
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                AppColors.success,
               ),
-              SkillScoreBadge(score: data.currentUser.skillScore?.round() ?? 0),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            l10n.confirmedCounter(confirmedCount, maxPlayers),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            children: [
+              Expanded(
+                child: _DashboardMetric(
+                  label: 'Confirmados',
+                  value: '$confirmedCount',
+                  icon: Icons.check_circle_outline,
+                  color: AppColors.success,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: _DashboardMetric(
+                  label: 'Na espera',
+                  value: '$waitlistCount',
+                  icon: Icons.hourglass_top_outlined,
+                  color: AppColors.warning,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: _DashboardMetric(
+                  label: 'Pendentes',
+                  value: '${data.pending.length}',
+                  icon: Icons.pending_actions_outlined,
+                  color: AppColors.leather,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -139,7 +216,7 @@ class _WeeklySessionCard extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.lg),
           Row(
             children: [
               const StatusBanner(status: StatusBannerStatus.synced),
@@ -159,19 +236,68 @@ class _WeeklySessionCard extends ConsumerWidget {
   }
 }
 
-class _ConfirmedCounter extends StatelessWidget {
-  const _ConfirmedCounter({required this.confirmed, required this.maxPlayers});
+class _MyStatusChip extends StatelessWidget {
+  const _MyStatusChip({required this.attendance});
 
-  final int confirmed;
-  final int maxPlayers;
+  final Attendance? attendance;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final status = attendance?.status;
+    final (label, chipStatus) = switch (status) {
+      'confirmed' => ('Vou', AttendanceChipStatus.confirmed),
+      'declined' => ('Não vou', AttendanceChipStatus.declined),
+      _ => ('Pendente', AttendanceChipStatus.pending),
+    };
 
-    return Text(
-      l10n.confirmedCounter(confirmed, maxPlayers),
-      style: Theme.of(context).textTheme.titleMedium,
+    return AttendanceChip(label: label, status: chipStatus);
+  }
+}
+
+class _DashboardMetric extends StatelessWidget {
+  const _DashboardMetric({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: color.subtle,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.sm),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, color: color, size: 20),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              value,
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: color,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            Text(
+              label,
+              style: theme.textTheme.labelSmall,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -191,32 +317,56 @@ class _AttendanceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isPrimary = expanded;
+
     return AppCard(
       padding: AppSpacing.sm,
       child: ExpansionTile(
         initiallyExpanded: expanded,
-        tilePadding: EdgeInsets.zero,
+        tilePadding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
         childrenPadding: const EdgeInsets.only(top: AppSpacing.sm),
-        title: Text(
-          '$title (${attendances.length})',
-          style: Theme.of(context).textTheme.bodyMedium,
+        leading: Icon(
+          isPrimary ? Icons.groups_outlined : Icons.list_alt_outlined,
+          color: isPrimary ? AppColors.success : null,
+        ),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(title, style: Theme.of(context).textTheme.bodyMedium),
+            ),
+            _SectionCountBadge(
+              count: attendances.length,
+              highlighted: isPrimary,
+            ),
+          ],
         ),
         children: [
           if (attendances.isEmpty)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Nenhum jogador.',
-                style: Theme.of(context).textTheme.bodySmall,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.sm,
+                0,
+                AppSpacing.sm,
+                AppSpacing.sm,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Nenhum jogador.',
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
               ),
             )
           else
             for (final attendance in attendances) ...[
-              PlayerTile(
-                name: _attendanceName(attendance, data),
-                label: _attendanceLabel(attendance, data, context),
-                goalkeeper: _attendanceGoalkeeper(attendance, data),
-                guest: attendance.kind == 'guest',
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+                child: PlayerTile(
+                  name: _attendanceName(attendance, data),
+                  label: _attendanceLabel(attendance, data, context),
+                  goalkeeper: _attendanceGoalkeeper(attendance, data),
+                  guest: attendance.kind == 'guest',
+                ),
               ),
               if (attendance != attendances.last)
                 const Divider(height: AppSpacing.lg),
@@ -252,6 +402,38 @@ class _AttendanceSection extends StatelessWidget {
 
   bool _attendanceGoalkeeper(Attendance attendance, AttendanceHomeData data) {
     return data.usersById[attendance.userId]?.goalkeeper ?? false;
+  }
+}
+
+class _SectionCountBadge extends StatelessWidget {
+  const _SectionCountBadge({required this.count, required this.highlighted});
+
+  final int count;
+  final bool highlighted;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = highlighted ? AppColors.success : AppColors.stone;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: color.subtle,
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs,
+        ),
+        child: Text(
+          '$count',
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: color,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+    );
   }
 }
 

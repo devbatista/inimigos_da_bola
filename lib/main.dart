@@ -8,6 +8,7 @@ import 'core/auth/auth_providers.dart';
 import 'core/db/database_providers.dart';
 import 'core/navigation/app_shell.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_mode_providers.dart';
 import 'features/attendance/presentation/controllers/attendance_providers.dart';
 import 'features/attendance/presentation/controllers/guest_attendance_providers.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
@@ -28,7 +29,7 @@ class InimigosDaBolaApp extends ConsumerWidget {
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
-      themeMode: ThemeMode.system,
+      themeMode: ref.watch(themeModeControllerProvider).themeMode,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: const _AuthGate(),

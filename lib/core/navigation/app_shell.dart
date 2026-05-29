@@ -5,11 +5,12 @@ import '../../features/attendance/presentation/screens/guest_attendances_screen.
 import '../../features/attendance/presentation/screens/home_screen.dart';
 import '../../features/game_mode/presentation/screens/game_mode_screen.dart';
 import '../../features/players/presentation/screens/players_screen.dart';
+import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../features/skill_ratings/presentation/screens/skill_ratings_screen.dart';
+import '../../features/stats/presentation/screens/stats_screen.dart';
 import '../../features/teams/presentation/screens/teams_draw_screen.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../auth/auth_providers.dart';
-import 'placeholder_screen.dart';
 
 class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key});
@@ -71,7 +72,7 @@ class _AppShellState extends ConsumerState<AppShell> {
         label: l10n.statsMenuLabel,
         icon: Icons.bar_chart_outlined,
         selectedIcon: Icons.bar_chart,
-        screen: PlaceholderScreen(title: l10n.statsMenuLabel),
+        screen: const StatsScreen(),
       ),
       _AppDestination(
         label: l10n.moreMenuLabel,
@@ -129,7 +130,13 @@ class _MoreScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.settings_outlined),
             title: Text(l10n.settingsMenuLabel),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (context) => const SettingsScreen(),
+                ),
+              );
+            },
           ),
           const Divider(),
           ListTile(

@@ -18,6 +18,22 @@ class SessionStatsDao extends DatabaseAccessor<AppDatabase>
         .watch();
   }
 
+  Future<List<SessionStat>> listByWeeklySession(String weeklySessionId) {
+    return (select(sessionStats)..where(
+          (stat) =>
+              stat.weeklySessionId.equals(weeklySessionId) &
+              stat.deletedAt.isNull(),
+        ))
+        .get();
+  }
+
+  Future<List<SessionStat>> listActiveStats() {
+    return (select(sessionStats)
+          ..where((stat) => stat.deletedAt.isNull())
+          ..orderBy([(stat) => OrderingTerm.desc(stat.goals)]))
+        .get();
+  }
+
   Future<void> upsertSessionStat(SessionStatsCompanion sessionStat) {
     return into(sessionStats).insertOnConflictUpdate(sessionStat);
   }

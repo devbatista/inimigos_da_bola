@@ -162,7 +162,7 @@ Checklist prático para implementar o app Flutter do Inimigos da Bola.
 - [ ] Integrar local e horário com `GET /api/v1/club`.
 - [x] Exibir botão "Vou!" / "Não vou".
 - [x] Exibir contador público `X de Y confirmados`.
-- [x] Exibir `Meu skill` com `SkillScoreBadge`.
+- [x] Não exibir skill individual na Home.
 - [x] Exibir listas:
   - [x] Confirmados
   - [x] Lista de espera
@@ -218,7 +218,7 @@ Checklist prático para implementar o app Flutter do Inimigos da Bola.
 - [x] Enviar `POST /api/v1/skill_ratings`.
 - [x] Não mostrar notas individuais recebidas.
 - [x] Não mostrar notas dadas por outros.
-- [x] Mostrar apenas o próprio `skill_score` na Home.
+- [x] Não mostrar `skill_score` individual na Home.
 
 ## Sorteio de times
 
@@ -262,14 +262,14 @@ Checklist prático para implementar o app Flutter do Inimigos da Bola.
 
 ## Estatísticas
 
-- [ ] Criar tela admin "Lançar stats".
-- [ ] Listar jogadores cadastrados confirmados na sessão semanal.
-- [ ] Inputs para gols e assistências.
+- [x] Criar tela admin "Lançar stats".
+- [x] Listar jogadores cadastrados confirmados na sessão semanal.
+- [x] Inputs para gols e assistências.
 - [ ] Salvar batch em `POST /weekly_sessions/:id/stats`.
-- [ ] Permitir funcionamento offline-first via `sync_queue`.
-- [ ] Criar tela de ranking.
+- [x] Permitir funcionamento offline-first via `sync_queue`.
+- [x] Criar tela de ranking.
 - [ ] Criar histórico no perfil.
-- [ ] Ranking lê do cache local.
+- [x] Ranking lê do cache local.
 
 ## Notificações FCM
 
@@ -313,6 +313,7 @@ Checklist prático para implementar o app Flutter do Inimigos da Bola.
 - [ ] Widget tests do Convite.
 - [ ] Integration test de confirmação de presença online.
 - [ ] Integration test de stats offline-first.
+- [x] Tests de repository de stats offline-first.
 - [x] Garantir análise estática (`dart analyze`).
 - [x] Garantir `flutter test`.
 - [x] Garantir `dart format`.

@@ -14,6 +14,10 @@ class SyncDao extends DatabaseAccessor<AppDatabase> with _$SyncDaoMixin {
     )..orderBy([(row) => OrderingTerm.asc(row.createdAt)])).watch();
   }
 
+  Stream<List<SyncStateData>> watchSyncStates() {
+    return select(syncState).watch();
+  }
+
   Future<void> enqueueMutation(SyncQueueCompanion mutation) {
     return into(syncQueue).insert(mutation);
   }
